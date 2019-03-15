@@ -1,0 +1,66 @@
+<html lang="en">
+
+<head>
+  <style>
+    @import url('/stylesheets/style.css');
+ </style>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Login Page</title>
+
+</head>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <!-- Tabs Titles -->
+
+    <!-- Icon -->
+    <div class="fadeIn first">
+      <img src="https://www.oasisbloc.io/assets/img/logo.png" />
+    </div>
+
+    <!-- Login Form -->
+    <form role="loginFrm" name="loginFrm" id="loginFrm" action="loginFrm">
+      <input type="text" id="loginId" class="fadeIn second" name="loginId" placeholder="login">
+      <input type="password" id="loginPw" class="fadeIn third" name="loginPw" placeholder="password">
+      <input type="button" class="fadeIn fourth" value="Log In" id="loginBtn">
+    </form>
+
+    <!-- Remind Passowrd -->
+    <div id="formFooter">
+      <a class="underlineHover" href="#">Forgot Password?</a>
+    </div>
+
+  </div>
+
+  <body>
+    <script src="./js/adminAction.js"></script>
+    <script>
+      var formObj = $("form[role='loginFrm']");
+
+      window.onload = function() {
+        document.getElementById('loginBtn').onclick = function() {
+
+          if ($('#loginId').val() != 'bob' && $('#loginId').val() != 'alice') {
+            alert('확인되는 계정이 없습니다.');
+            return;
+          }
+
+          var f = document.loginFrm;
+          f.method = "POST";
+          f.data = {
+            'id': $('#loginId').val()
+          }
+          formObj.attr("action", __login.cmdLogin(f));
+          return false;
+        };
+      }
+
+    </script>
+  </body>
+
+</html>
