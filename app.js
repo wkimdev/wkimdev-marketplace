@@ -23,6 +23,10 @@ app.use(express.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+
 //API DOC Root
 app.use('/docs', express.static(path.join(__dirname, 'docs'), {
   index: 'index.html'
@@ -37,16 +41,16 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/member/login', memberRouter);
 
-// fs.readdirSync(__dirname + '/routes/').forEach(function(fileName) {
-//   var routeName = fileName.substr(0, fileName.lastIndexOf('.'));
-//   var fileFullPath = __dirname + '/routes/' + fileName;
+fs.readdirSync(__dirname + '/routes/').forEach(function(fileName) {
+  var routeName = fileName.substr(0, fileName.lastIndexOf('.'));
+  var fileFullPath = __dirname + '/routes/' + fileName;
 
-//   console.log(routeName);
+  console.log(routeName);
 
-//   if (fs.statSync(fileFullPath).isFile()) {
-//     app.use('/' + routeName, require(fileFullPath));
-//   }
-// });
+  if (fs.statSync(fileFullPath).isFile()) {
+    app.use('/' + routeName, require(fileFullPath));
+  }
+});
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -59,6 +63,8 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
   next(createError(404));
 });
+
+
 
 // error handler
 app.use(function(err, req, res, next) {

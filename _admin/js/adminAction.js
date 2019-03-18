@@ -9,11 +9,37 @@ __common = {
       dataType: 'json',
       async: true,
       cache: false
-    }).done(function(data) {
-      console.log("Did it work? " + data);
     });
 
     return request;
+
+    /*리스트용 데이터 타입*/
+    // function getDataTypeforList() {
+    //   var selDataType = $("#sdtype option:selected").val();
+    //   console.log($("#sdtype option:selected").val());
+    //   if (selDataType != "") {
+    //     $.ajax({
+    //       url: '/getDataType',
+    //       method: 'post',
+    //       data: {
+    //         datatype: selDataType
+    //       },
+    //       success: function(result) {
+    //         var json = $.parseJSON(result);
+    //         dtypejson = json
+    //         getData(selDataType);
+    //       },
+    //       error: function(err) {
+    //         console.log(err.toString());
+    //         alert('데이터 통신에러');
+    //         return;
+    //       }
+    //     });
+    //   } else {
+    //     alert('조회할 데이터 타입을 선택해주세요');
+    //     return;
+    //   }
+    // }
   },
   cmdSendByAjax: function(_obj, _form) {
     $('form').ajaxForm({
@@ -69,15 +95,18 @@ var __login = {
     // this._pw = null;
   },
   cmdLogin: function(_this) {
-    this.init();
+    //this.init();
 
-    //alert(JSON.stringify(_this.data.id));
-    var _formValue = _this.data.id;
+    var _formValue = {};
+    _formValue.id = _this.data.id;
 
-    var _returnJson = __common.cmdLoadByAjax('/routes/member/login', JSON.stringify(_formValue));
-    alert(_returnJson);
+    var _returnJson = __common.cmdLoadByAjax('/member/login', JSON.stringify(_formValue));
+
     _returnJson.done(function(_data) {
-      location.href = '/admin/dashboard/index.html';
+      // alert(JSON.stringify(_data));
+      if (_data.resultData) {
+        location.href = '/admin/index.html';
+      }
     });
   },
   cmdLogout: function() {
