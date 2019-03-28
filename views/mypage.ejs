@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ./templates/head %>
+  <style>
+    .page-tab {
+      padding: 0;
+    }
+
+    .page-tab li {
+      display: inline-block;
+    }
+
+    .page-tab li a {
+      display: block;
+      padding: 5px 7px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .page-tab li.on a {
+      color: #185482;
+      border-bottom: 2px solid #185482;
+    }
+
+  </style>
+</head>
+
+<body>
+  <!-- header -->
+  <% include ./templates/header %>
+
+  <div class=" container-fluid">
+    <div class="row">
+      <% include ./templates/leftSidebar %>
+
+      <!-- Dashboard 영역 -->
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">My Page</h1>
+        </div>
+
+        <section class="content-header">
+          <ul class="page-tab">
+            <li class="on"><a href="#">My Data</a> </li>
+            <li class="on"><a href="#">My Transaction</a> </li>
+          </ul>
+        </section>
+
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-body table-responsive">
+                  <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
+                      <li role="presentation" class="active"><a href="#traded" id="liTraded" aria-controls="traded"
+                          role="tab" data-toggle="tab" aria-expanded="true">Traded</a></li>
+                      <li role="presentation" class=""><a href="#uploaded" id="liUploaded" aria-controls="uploaded"
+                          role="tab" data-toggle="tab" aria-expanded="false">Uploaded</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                      <div role="tabpanel" class="tab-pane active" id="traded">
+                        <!-- traded Datas -->
+                      </div>
+
+                      <div role="tabpanel" class="tab-pane" id="uploaded">
+                        <!-- uploaded Datas -->
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+
+      </main>
+
+    </div>
+  </div>
+
+  <!--데이터 타입 추가 팝업-->
+  <% include ./templates/modals %>
+
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/jquery.cookie-1.4.1.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+  <script>
+    // alert($.cookie());
+
+    $(document).ready(function() {
+      $("#head_adminId").text($.cookie().ADMIN_ID);
+      $("#side_adminId").text($.cookie().ADMIN_ID);
+      //alert("test :" + $.cookie().ADMIN_ID);
+    });
+
+    function openAddDataTypePopup() {
+      $("#add_data_type_popup").modal();
+    }
+
+  </script>
+
+</body>
+
+</html>

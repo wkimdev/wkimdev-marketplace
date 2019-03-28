@@ -46,18 +46,19 @@
       window.onload = function() {
         document.getElementById('loginBtn').onclick = function() {
 
-          if ($('#loginId').val() != 'bob' && $('#loginId').val() != 'alice') {
-            alert('확인되는 계정이 없습니다.');
-            return;
-          }
+          location.href = "/main";
+          //   if ($('#loginId').val() != 'bob' && $('#loginId').val() != 'alice') {
+          //     alert('확인되는 계정이 없습니다.');
+          //     return;
+          //   }
 
-          var f = document.loginFrm;
-          f.method = "POST";
-          f.data = {
-            'id': $('#loginId').val()
-          }
-          formObj.attr("action", __login.cmdLogin(f));
-          return false;
+          //   var f = document.loginFrm;
+          //   f.method = "POST";
+          //   f.data = {
+          //     'id': $('#loginId').val()
+          //   }
+          //   formObj.attr("action", __login.cmdLogin(f));
+          //   return false;
         };
       }
 
