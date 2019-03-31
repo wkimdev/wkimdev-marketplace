@@ -25,10 +25,10 @@
     </div>
 
     <!-- Login Form -->
-    <form role="loginFrm" name="loginFrm" id="loginFrm" action="loginFrm">
+    <form name="loginFrm" id="loginFrm" method="post" action="/login">
       <input type="text" id="loginId" class="fadeIn second" name="loginId" placeholder="login">
       <input type="password" id="loginPw" class="fadeIn third" name="loginPw" placeholder="password">
-      <input type="button" class="fadeIn fourth" value="Log In" id="loginBtn">
+      <input type="submit" class="fadeIn fourth" value="Log In">
     </form>
 
     <!-- Remind Passowrd -->
@@ -39,27 +39,24 @@
   </div>
 
   <body>
-    <script src="./js/adminAction.js"></script>
     <script>
-      var formObj = $("form[role='loginFrm']");
-
       window.onload = function() {
-        document.getElementById('loginBtn').onclick = function() {
+        // document.getElementById('loginBtn').onclick = function() {
 
-          location.href = "/main";
-          //   if ($('#loginId').val() != 'bob' && $('#loginId').val() != 'alice') {
-          //     alert('확인되는 계정이 없습니다.');
-          //     return;
-          //   }
+        //   location.href = "/main";
+        //   if ($('#loginId').val() != 'bob' && $('#loginId').val() != 'alice') {
+        //     alert('확인되는 계정이 없습니다.');
+        //     return;
+        //   }
 
-          //   var f = document.loginFrm;
-          //   f.method = "POST";
-          //   f.data = {
-          //     'id': $('#loginId').val()
-          //   }
-          //   formObj.attr("action", __login.cmdLogin(f));
-          //   return false;
-        };
+        //   var f = document.loginFrm;
+        //   f.method = "POST";
+        //   f.data = {
+        //     'id': $('#loginId').val()
+        //   }
+        //   formObj.attr("action", __login.cmdLogin(f));
+        //   return false;
+        //   };
       }
 
     </script>

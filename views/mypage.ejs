@@ -33,7 +33,7 @@
 
   <div class=" container-fluid">
     <div class="row">
-      <% include ./templates/leftSidebar %>
+      <% include ./templates/sidebar %>
 
       <!-- Dashboard 영역 -->
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
@@ -93,20 +93,27 @@
   <% include ./templates/modals %>
 
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="/js/jquery.min.js"></script>
-  <script src="/js/jquery.cookie-1.4.1.min.js"></script>
-  <script src="/js/bootstrap.min.js"></script>
   <script>
-    // alert($.cookie());
-
-    $(document).ready(function() {
-      $("#head_adminId").text($.cookie().ADMIN_ID);
-      $("#side_adminId").text($.cookie().ADMIN_ID);
-      //alert("test :" + $.cookie().ADMIN_ID);
+    $(function() {
+      // test 
+      getTraded();
     });
 
-    function openAddDataTypePopup() {
-      $("#add_data_type_popup").modal();
+    function getTraded() {
+      $.ajax({
+        url: '/getAjax',
+        data: {
+          loginId: ''
+        },
+        type: 'POST',
+        dataType: 'json',
+        success: function(data) {
+
+        },
+        error: function(error) {
+          alert('Error occurred.');
+        }
+      })
     }
 
   </script>

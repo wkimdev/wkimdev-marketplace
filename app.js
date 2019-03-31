@@ -1,8 +1,11 @@
+process.env.NODE_ENV = (process.env.NODE_ENV && (process.env.NODE_ENV).trim().toLowerCase() == 'production') ? 'production' : 'development';
+
 var createError = require('http-errors');
 var express = require('express');
 var fs = require('fs');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var expressSession = require('express-session');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
@@ -17,6 +20,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
+app.use(expressSession({
+  secret: 'my key',
+  resave: true,
+  saveUninitialized: true
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
