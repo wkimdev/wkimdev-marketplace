@@ -13,8 +13,4 @@ router.get('/buy', function(req, res) {
   res.send('this is buy action!');
 });
 
-router.post('/addDataType', function(req, res) {
-  console.log(req);
-});
-
 module.exports = router;

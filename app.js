@@ -44,11 +44,6 @@ app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
-//API DOC Root
-// app.use('/docs', express.static(path.join(__dirname, 'docs'), {
-//   index: 'index.html'
-// }));
-
 //Admin Page Root
 app.use('/admin', express.static(path.join(__dirname, '_admin'), {
   index: 'login.html'
