@@ -23,17 +23,22 @@
           <h1 class="h2">Products</h1>
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-              <button class="btn btn-sm btn-outline-secondary">Share</button>
-              <button class="btn btn-sm btn-outline-secondary">Export</button>
+              <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                <span data-feather="calendar"></span>
+                This week
+              </button> &nbsp; &nbsp;
+              <button class="btn btn-sm btn-outline-secondary" onclick="openAddDataPopup()">
+                <i class="fas fa-plus-circle"></i>&nbsp; Add Data
+              </button>
             </div>
-            <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-              <span data-feather="calendar"></span>
-              This week
-            </button>
           </div>
         </div>
 
-        <h2>Products title</h2>
+        <h2>Products Manage</h2>
+        <h5>Add your domain Data</h5>
+        <h5>seleted list</h5>
+        <h5>add button</h5>
+
         <div class="table-responsive">
           <table class="table table-striped table-sm">
             <thead>
@@ -63,6 +68,7 @@
             </tbody>
           </table>
         </div>
+        <h5>page navigation</h5>
       </main>
 
     </div>
@@ -72,6 +78,15 @@
   <% include ./templates/modals %>
 
   <script>
+    function openAddDataPopup() {
+      $('#fieldArea *').remove();
+      $("#dtype option:eq(0)").prop("selected", true);
+      $("#add_data_popup").modal();
+    }
+
+    function fn_changeAddType(arg) {
+      //get title (arg.title)
+    }
 
   </script>
 

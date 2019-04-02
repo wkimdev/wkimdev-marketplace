@@ -5,7 +5,8 @@ var router = express.Router();
 router.get('/', function(req, res) {
   // 세션에 login아이디가 없으면 로그인 하라는 alert를 보여줘야 한다. --> 안그러면 error 
   res.render('products', {
-    loginId: req.session.user.id
+    //loginId: req.session.user.id
+    loginId: 'bob'
   });
 });
 

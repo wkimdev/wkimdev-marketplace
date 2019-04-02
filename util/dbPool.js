@@ -7,7 +7,6 @@ var conn = mysql.createConnection({
   database: 'market'
 });
 
-//conn.getConnection();
 conn.connect();
 
 // if (process.env.NODE_ENV == 'production') {

@@ -129,7 +129,10 @@
           provider: loginId
         },
         success: function(result) {
-          console.log(result);
+          console.log("successed result :" + result);
+          alert(" data add completed!! ");
+          $("#add_data_type_popup").modal('toggle');
+          location.reload();
         },
         error: function(err) {
           console.log(err);
