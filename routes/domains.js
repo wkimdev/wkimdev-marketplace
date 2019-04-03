@@ -27,6 +27,26 @@ router.get('/getDataTypeList', function(req, res) {
 });
 
 /* 
+ * get datatype filed
+ */
+router.get('/getDataTypeField', function(req, res){
+  console.log(req.query.datatype);
+  var param = req.query.datatype;
+  var sql = 'select id, field01, field02, field03, field04, field05  from datatype where title = ?';
+
+  dbPool.query(sql, param, function(err, rows){
+    if (err) {
+      console.log(err);
+    }
+    var result = {
+      data: ''
+    };
+    result.data = rows;
+    res.send(result);
+  })
+})
+
+/* 
  * data type 추가
  */
 router.post('/addDataType', function(req, res) {
@@ -61,5 +81,6 @@ router.post('/addDataType', function(req, res) {
       res.json(results);
     });
 });
+
 
 module.exports = router;

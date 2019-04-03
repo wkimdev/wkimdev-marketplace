@@ -43,7 +43,7 @@
           <table class="table table-striped table-sm">
             <thead>
               <tr>
-                <th>#</th>
+                <th>index</th>
                 <th>Header</th>
                 <th>Header</th>
                 <th>Header</th>
@@ -78,20 +78,20 @@
   <% include ./templates/modals %>
 
   <script>
+
+    /* get datatype */
     $(function() {
       $.ajax({
         url: '/domains/getDataTypeList',
         type: 'GET',
         dataType: 'json',
         success: function(result) {
-          console.log("callback from getdatatyle : " + JSON.stringify(result));
-
           if (!result.data.length) {
             alert("no datatype data!");
           } else {
             for (let i = 0; i < result.data.length; i++) {
               const element = result.data[i].title;
-              console.log(element);
+              $("#dtype").append("<option value='" + element + "'>" + element + "</option>");
             }
           }
 
@@ -99,21 +99,82 @@
         error: function(err) {
           alert('err occurred');
         }
-
       })
     })
 
     function openAddDataPopup() {
-      $('#fieldArea *').remove();
+      //$('#fieldArea *').remove();
       $("#dtype option:eq(0)").prop("selected", true);
       $("#add_data_popup").modal();
     }
 
     function fn_changeAddType(arg) {
-      getDataType(arg.value);
+      getDataTypeFiled(arg.value);
     }
 
-    function getDataType() {}
+    /* datatype에 대한 datafiled  */
+    function getDataTypeFiled(arg) {
+
+      $.ajax({
+        url: '/domains/getDataTypeField',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+          datatype: arg
+        },
+        success: function(result){
+          var json = result.data[0];
+          var arr = [json.field01, json.field02, json.field03, json.field04, json.field05];
+
+          $("#fieldArea").empty();
+          var innerHtml = "";
+          innerHtml += '<div class="input-group mb-3">';
+          innerHtml += '  <div class="input-group-prepend">';
+          innerHtml += '    <span class="input-group-text" id="basic-addon1">Price</span>';  
+          innerHtml += '  </div>';
+          innerHtml += '  <input type="text" class="edit" id="price">';
+          innerHtml += '  <input type="hidden" id="fieldnum" value="' + "test" + '">';
+          innerHtml += '</div>';
+          $("#fieldArea").append(innerHtml);
+          
+          for (let i = 1; i < 6; i++) {
+            var innerHtml2 = "";
+            innerHtml2 += '<div class="input-group mb-3">';
+            innerHtml2 += '  <span class="input-group-text" id="basic-addon1">'+arr[i-1]+'</span>';
+            innerHtml2 += '  <input type="text" class="form-control" id=\"dfield0' + i +'\">';
+            innerHtml2 += '</div>';
+            $("#fieldArea").append(innerHtml2);
+          }
+
+        },
+        error: function(err){
+          console.log(err);
+          alert('데이터 통신에러');
+          return;
+        }
+      })
+    }
+
+    function addDataTypeContent(){
+      var formData = new FormData();
+
+      
+      // value값들 받아서 
+      // post
+      $.ajax({
+        url: '/products/addData',
+        type: 'POST',
+        datatype: 'json',
+        success: function(result){
+          console.log(result);
+        },
+        error: function(err){
+          console.log(err);
+          alert('데이터 통신에러');
+          return;
+        }
+      })
+    }
 
   </script>
 
