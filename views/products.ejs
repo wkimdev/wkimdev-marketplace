@@ -78,6 +78,31 @@
   <% include ./templates/modals %>
 
   <script>
+    $(function() {
+      $.ajax({
+        url: '/domains/getDataTypeList',
+        type: 'GET',
+        dataType: 'json',
+        success: function(result) {
+          console.log("callback from getdatatyle : " + JSON.stringify(result));
+
+          if (!result.data.length) {
+            alert("no datatype data!");
+          } else {
+            for (let i = 0; i < result.data.length; i++) {
+              const element = result.data[i].title;
+              console.log(element);
+            }
+          }
+
+        },
+        error: function(err) {
+          alert('err occurred');
+        }
+
+      })
+    })
+
     function openAddDataPopup() {
       $('#fieldArea *').remove();
       $("#dtype option:eq(0)").prop("selected", true);
@@ -85,8 +110,10 @@
     }
 
     function fn_changeAddType(arg) {
-      //get title (arg.title)
+      getDataType(arg.value);
     }
+
+    function getDataType() {}
 
   </script>
 
