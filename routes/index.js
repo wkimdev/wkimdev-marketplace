@@ -15,6 +15,11 @@ router.get('/', function(req, res) {
   }
 });
 
+/** test page */
+router.get('/test', function(req, res) {
+  res.render('fileupload');
+})
+
 router.get('/mypage', function(req, res, next) {
   res.render('mypage', {
     loginId: req.session.user.id,
