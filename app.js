@@ -7,6 +7,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var logger = require('morgan');
+var bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
+
 
 var indexRouter = require('./routes/index');
 var domainRouter = require('./routes/domains');
@@ -19,6 +22,20 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+// file download
+app.use('/downloadFile', express.static('tmp'));
+
+// default options
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: '/tmp/'
+}));
 
 app.use(expressSession({
   secret: 'my key',

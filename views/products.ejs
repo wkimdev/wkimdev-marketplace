@@ -23,10 +23,8 @@
           <h1 class="h2">Products</h1>
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-              <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                <span data-feather="calendar"></span>
-                This week
-              </button> &nbsp; &nbsp;
+              <!-- <button class="btn btn-sm btn-outline-secondary dropdown-toggle">
+              </button> &nbsp; &nbsp; -->
               <button class="btn btn-sm btn-outline-secondary" onclick="openAddDataPopup()">
                 <i class="fas fa-plus-circle"></i>&nbsp; Add Data
               </button>
@@ -36,48 +34,83 @@
 
         <h2>Products Manage</h2>
         <h5>Add your domain Data</h5>
-        <h5>seleted list</h5>
-        <h5>add button</h5>
 
         <div class="table-responsive">
-          <table class="table table-striped table-sm">
+          <table class="table table-striped table-sm" id="dataListTable">
             <thead>
               <tr>
                 <th>index</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
+                <th>title</th>
+                <th>price</th>
+                <th>field01</th>
+                <th>field02</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>1,001</td>
-                <td>Lorem</td>
-                <td>ipsum</td>
-                <td>dolor</td>
-                <td>sit</td>
-              </tr>
-              <tr>
-                <td>1,002</td>
-                <td>amet</td>
-                <td>consectetur</td>
-                <td>adipiscing</td>
-                <td>elit</td>
-              </tr>
-            </tbody>
+
           </table>
         </div>
         <h5>page navigation</h5>
       </main>
 
+      <form id="myForm" action="/upload" method="post" name="myForm" encType="multipart/form-data"
+        style="margin: auto;">
+        <div>
+          <label for="price">Price:</label>
+          <input type="text" id="price" name="price">
+        </div>
+        <div>
+          <label for="title">Title:</label>
+          <input type="text" id="title" name="title">
+        </div>
+        <div>
+          <label for="field01">field01:</label>
+          <input type="text" id="field01" name="field01">
+        </div>
+        <div>
+          <label for="field02">field02:</label>
+          <input type="text" id="field02" name="field02">
+        </div>
+        <div>
+          <label for="field03">field03:</label>
+          <input type="text" id="field03" name="field03">
+        </div>
+        <div>
+          <label for="field04">field04:</label>
+          <input type="text" id="field04" name="field04">
+        </div>
+        <div>
+          <label for="field05">field05:</label>
+          <input type="text" id="field05" name="field05">
+        </div>
+        <div>
+          <label for="rating">file Upload:</label>
+          <input type="file" name="file_upload" style="margin-top:10px;" />
+        </div>
+
+        <input type="submit" value="Submit!">
+      </form>
+
+      <div>
+        <!-- <button value="download" onclick="filedown()"></button>
+        <a href="/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/oraclenet-구성도.drawio" download>
+          <span><i class="fas fa-plus-circle"></i></span>
+        </a> -->
+
+        <!-- <input type="button" value="filedown" id="filedown" onclick="filedown()"> -->
+        <a id="fileDownload" onclick="filedown()" download>
+          <span><i class="fas fa-plus-circle"></i></span>
+        </a>
+      </div>
     </div>
   </div>
+
+
 
   <!--데이터 타입 추가 팝업-->
   <% include ./templates/modals %>
 
   <script>
+    var loginId = "<%=loginId %>";
 
     /* get datatype */
     $(function() {
@@ -100,6 +133,74 @@
           alert('err occurred');
         }
       })
+
+      /* get data */
+      $.ajax({
+        url: '/products/getData',
+        type: 'GET',
+        dataType: 'json',
+        success: function(result) {
+          var json = result;
+
+          if (!json) {
+            alert('no data!');
+          } else {
+            for (let i = 0; i < json.data.length; i++) {
+              const datalists = json.data[i];
+
+              var innerHtml = "";
+              innerHtml += " <tbody>";
+              innerHtml += "  <tr>";
+              innerHtml += "    <td>" + datalists.id + "</td>";
+              innerHtml += "    <td>" + datalists.title + "</td>";
+              innerHtml += "    <td>" + datalists.price + "</td>";
+              innerHtml += "    <td>" + datalists.field01 + "</td>";
+              innerHtml += "    <td>" + datalists.field02 + "</td>";
+              innerHtml += "  </tr>";
+              innerHtml += " </tbody>";
+              $('#dataListTable').append(innerHtml);
+            }
+            //alert(JSON.stringify(result));
+          }
+        },
+        error: function(err) {
+          datatypeId
+          alert('err occurred');
+        }
+
+      })
+
+      /* test code */
+      $('form').submit(function(event) {
+        event.preventDefault();
+        //collect the form data using Id Selector what ever data you need to send to server
+        // let price = $('#price').val();
+        // let title = $('#title').val();
+        // let field01 = $('#field01').val();
+        // let field02 = $('#field02').val();
+        // let field03 = $('#field03').val();
+        // let field04 = $('#field04').val();
+        // let field05 = $('#field05').val();
+        // let file = $("input[name=file_upload]")[0].files[0];
+
+        var form = $('form')[0];
+        var formData = new FormData(form);
+
+        alert(formData);
+
+        $.ajax({
+          url: '/products/addData',
+          data: formData,
+          contentType: false,
+          processData: false,
+          type: 'POST',
+          success: function(data) {
+            alert(data);
+          }
+        });
+      });
+
+
     })
 
     function openAddDataPopup() {
@@ -122,32 +223,35 @@
         data: {
           datatype: arg
         },
-        success: function(result){
+        success: function(result) {
           var json = result.data[0];
+          var dtypeId = json.id;
           var arr = [json.field01, json.field02, json.field03, json.field04, json.field05];
+
+          console.log("test dtypeId :" + dtypeId);
 
           $("#fieldArea").empty();
           var innerHtml = "";
           innerHtml += '<div class="input-group mb-3">';
           innerHtml += '  <div class="input-group-prepend">';
-          innerHtml += '    <span class="input-group-text" id="basic-addon1">Price</span>';  
+          innerHtml += '    <span class="input-group-text" id="basic-addon1">Price</span>';
           innerHtml += '  </div>';
           innerHtml += '  <input type="text" class="edit" id="price">';
-          innerHtml += '  <input type="hidden" id="fieldnum" value="' + "test" + '">';
+          innerHtml += ' <input type="hidden" id="dtypeId" value="' + dtypeId + '">';
           innerHtml += '</div>';
           $("#fieldArea").append(innerHtml);
-          
+
           for (let i = 1; i < 6; i++) {
             var innerHtml2 = "";
             innerHtml2 += '<div class="input-group mb-3">';
-            innerHtml2 += '  <span class="input-group-text" id="basic-addon1">'+arr[i-1]+'</span>';
-            innerHtml2 += '  <input type="text" class="form-control" id=\"dfield0' + i +'\">';
+            innerHtml2 += '  <span class="input-group-text" id="basic-addon1">' + arr[i - 1] + '</span>';
+            innerHtml2 += '  <input type="text" class="form-control" id=\"dfield0' + i + '\">';
             innerHtml2 += '</div>';
             $("#fieldArea").append(innerHtml2);
           }
 
         },
-        error: function(err){
+        error: function(err) {
           console.log(err);
           alert('데이터 통신에러');
           return;
@@ -155,15 +259,16 @@
       })
     }
 
-    function addDataTypeContent(){
+    function addDataTypeContent() {
       var formData = new FormData();
       // 받아야 하는 값, -datatype - id
       /*
-        datatypeId INT(100) NOT NULL,
-        provider VARCHAR(100) NOT NULL,
-        adddate datetime,
+        provider VARCHAR(100) NOT NULL, --router
+        adddate datetime, --router
+        traded BOOLEAN NOT NULL, --router
+
+        datatypeId INT(100) NOT NULL, 
         price VARCHAR(100) NOT NULL,
-        traded BOOLEAN NOT NULL,  
         field01 VARCHAR(100) NOT NULL,
         field02 VARCHAR(100) NOT NULL,
         field03 VARCHAR(100) NOT NULL,
@@ -171,22 +276,45 @@
         field05 VARCHAR(100) NOT NULL,  
       */
 
+      // formData.append("datatypeId", $("#dtypeId").val()); // datatypeId..
+      // formData.append("price", $("#price").val());
+      // formData.append("field01", $("#dfield01").val());
+      // formData.append("field02", $("#dfield02").val());
+      // formData.append("field03", $("#dfield03").val());
+      // formData.append("field04", $("#dfield04").val());
+      // formData.append("field05", $("#dfield05").val());
+      formData.append('test', 'this is test!');
 
-      // value값들 받아서 
-      // post
+      for (let [key, value] of formData.entries()) {
+        alert(value);
+      }
+      //alert(formData.get("datatypeId"));
+
       $.ajax({
         url: '/products/addData',
         type: 'POST',
-        datatype: 'json',
-        success: function(result){
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(result) {
           console.log(result);
         },
-        error: function(err){
+        error: function(err) {
           console.log(err);
           alert('데이터 통신에러');
           return;
         }
       })
+    }
+
+    function filedown() {
+      // id,
+      // download file 형식으로 
+      //var filename = 'oraclenet-구성도.drawio.pdf';
+      var filename = '7f03edc7b278a5c3aa859a796a953a39d6439628';
+      // 애를 해석할 수 있는 애가 필요하다. 
+      var filePath = '/downloadFile/' + filename;
+      $('#fileDownload').attr('href', filePath);
     }
 
   </script>

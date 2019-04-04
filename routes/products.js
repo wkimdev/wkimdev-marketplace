@@ -1,6 +1,14 @@
 var express = require('express');
 var router = express.Router();
+var bodyParser = require('body-parser');
 var dbPool = require('../util/dbPool');
+var hashFiles = require('hash-files');
+
+bodyParser.urlencoded({
+  extended: true
+});
+
+bodyParser.json();
 
 /* GET users listing. */
 router.get('/', function(req, res) {
@@ -15,24 +23,61 @@ router.get('/buy', function(req, res) {
   res.send('this is buy action!');
 });
 
-router.post('/addData', function(req, res){
-  var title = req.body.title;
-  var field01 = req.body.field01;
-  var field02 = req.body.field02;
-  var field03 = req.body.field03;
-  var field04 = req.body.field04;
-  var field05 = req.body.field05;
-  var provider = req.body.provider;
+router.get('/getData', function(req, res) {
+  var sql = 'SELECT di.id, dt.title, di.field01, di.field02, di.field03, di.field04, di.field05, di.provider, di.adddate ' +
+    'FROM datainfo di JOIN datatype dt ON di.datatypeId = dt.id';
 
+  dbPool.query(sql, function(err, rows) {
+    if (err) {
+      console.log(err);
+    }
+    var result = {
+      data: ''
+    };
+    result.data = rows;
+    res.send(result);
+  });
+
+});
+
+router.post('/addData', function(req, res) {
+  // console.log(req.body);
+  // console.log("ch1 :" + req.files.file_upload);
+  // console.log("ch2 :" + req.files.file_upload.name);
+  // console.log("ch3 :" + req.files.file_upload.md5);
+
+  /** file download ing */
+  // var file = req.files.file_upload.name;
+
+  // hashFiles(file, function(err, hash) {
+  //   if (Object.keys(req.files).length == 0) {
+  //     return res.status(400).send('No files were uploaded.');
+  //   }
+
+  //   let file_upload = req.files.file_upload;
+  //   let file_path = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/';
+
+  //   file_upload.mv(file_path + hash, function(err) {
+  //     if (err)
+  //       return res.status(500).send(err);
+
+  //     res.send('File uploaded!');
+  //   });
+
+  // });
+
+  /** data field add */
   var sql = " INSERT INTO datainfo SET ? ";
   var params = {
-    title: title,
-    field01: field01,
-    field02: field02,
-    field03: field03,
-    field04: field04,
-    field05: field05,
-    provider: provider,
+    datatypeId: 1, //var datatypeId = req.body.datatypeId;
+    field01: req.body.field01,
+    field02: req.body.field01,
+    field03: req.body.field03,
+    field04: req.body.field04,
+    field05: req.body.field05,
+    price: req.body.price,
+    traded: false,
+    provider: 'bob', // 추후에 session 으로 change
     adddate: new Date()
   };
 
