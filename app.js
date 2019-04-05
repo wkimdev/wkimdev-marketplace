@@ -2,7 +2,6 @@ process.env.NODE_ENV = (process.env.NODE_ENV && (process.env.NODE_ENV).trim().to
 
 var createError = require('http-errors');
 var express = require('express');
-var fs = require('fs');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
@@ -66,16 +65,16 @@ app.use('/admin', express.static(path.join(__dirname, '_admin'), {
   index: 'login.html'
 }));
 
-fs.readdirSync(__dirname + '/routes/').forEach(function(fileName) {
-  var routeName = fileName.substr(0, fileName.lastIndexOf('.'));
-  var fileFullPath = __dirname + '/routes/' + fileName;
+// fs.readdirSync(__dirname + '/routes/').forEach(function(fileName) {
+//   var routeName = fileName.substr(0, fileName.lastIndexOf('.'));
+//   var fileFullPath = __dirname + '/routes/' + fileName;
 
-  console.log(routeName);
+//   console.log(routeName);
 
-  if (fs.statSync(fileFullPath).isFile()) {
-    app.use('/' + routeName, require(fileFullPath));
-  }
-});
+//   if (fs.statSync(fileFullPath).isFile()) {
+//     app.use('/' + routeName, require(fileFullPath));
+//   }
+// });
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

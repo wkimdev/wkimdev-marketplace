@@ -3,6 +3,10 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 var dbPool = require('../util/dbPool');
 var hashFiles = require('hash-files');
+var mime = require('mime');
+var fs = require('fs');
+const path = require('path');
+
 
 bodyParser.urlencoded({
   extended: true
@@ -21,14 +25,25 @@ router.get('/', function(req, res) {
 
 router.get('/fileDownload', function(req, res) {
 
-  // 다운로드 경로
-  // console.log(__dirname);
-  var filePath = 'c:/Users/rladn/git/wkimdev-marketplace/tmp/540fe88c0b25fb6b78ffeef17fbf1b1c936fa9de';
-  // // filePath에 있는 파일 스트림 객체를 얻어온다.(바이트 알갱이를 읽어옵니다.)
-  var fileStream = fs.createReadStream(filePath);
+  origFileNm = 'test.jpg';
+  savedFileNm = 'e089ab3ba83bf8a90b69c92d23cf3611cae8953f';
+  savedPath = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp';
 
-  // // 다운로드 한다.(res 객체에 바이트알갱이를 전송한다)
-  fileStream.pipe(res);
+  var file = savedPath + '/' + savedFileNm;
+  console.log('file : ' + file);
+
+  // mimetype = mime.lookup(origFileNm);
+  // mimetype = mime.lookup(file)
+  // console.log('mimetype : ' + mimetype);
+
+  res.setHeader('Content-disposition', 'attachment; filename=' + origFileNm); // origFileNm으로 로컬PC에 파일 저장
+  res.setHeader('Content-type', 'image/jpeg');
+
+  const filePath = path.join(__dirname, 'e089ab3ba83bf8a90b69c92d23cf3611cae8953f');
+
+  var filestream = fs.createReadStream(filePath);
+  // 입력 스트림과 출력 스트림을 연결해준다. 
+  filestream.pipe(res);
 
 });
 
@@ -58,23 +73,26 @@ router.post('/addData', function(req, res) {
   /** file download ing */
   var file = req.files.file_upload.name;
 
-  hashFiles(file, function(err, hash) {
-    if (Object.keys(req.files).length == 0) {
-      return res.status(400).send('No files were uploaded.');
-    }
+  // hashFiles(file, function(err, hash) {
+  if (Object.keys(req.files).length == 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
 
-    let file_upload = req.files.file_upload;
-    // let file_path = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/';
-    let file_path = 'c:/Users/rladn/git/wkimdev-marketplace/tmp/';
+  let file_upload = req.files.file_upload;
+  // 성공
+  let file_path = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/' + file;
+  // 윈도우일 경우 로컬 경로 다시 확인!
+  // let file_path = '/Users/rladn/git/wkimdev-marketplace/tmp/';
 
-    file_upload.mv(file_path + hash, function(err) {
-      if (err)
-        return res.status(500).send(err);
+  // file_upload.mv(file_path + hash, function(err) {
+  file_upload.mv(file_path, function(err) {
+    if (err)
+      return res.status(500).send(err);
 
-      res.send('File uploaded!');
-    });
-
+    res.send('File uploaded!');
   });
+
+  // });
 
   /** data field add */
   // var sql = " INSERT INTO datainfo SET ? ";

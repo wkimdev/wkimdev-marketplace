@@ -44,6 +44,7 @@
                 <th>price</th>
                 <th>field01</th>
                 <th>field02</th>
+                <th>file</th>
               </tr>
             </thead>
 
@@ -122,6 +123,8 @@
           if (!result.data.length) {
             alert("no datatype data!");
           } else {
+
+            // data purchased 여부 check 
             for (let i = 0; i < result.data.length; i++) {
               const element = result.data[i].title;
               $("#dtype").append("<option value='" + element + "'>" + element + "</option>");
@@ -147,6 +150,8 @@
           } else {
             for (let i = 0; i < json.data.length; i++) {
               const datalists = json.data[i];
+              const purchased = 0;
+
 
               var innerHtml = "";
               innerHtml += " <tbody>";
@@ -156,6 +161,13 @@
               innerHtml += "    <td>" + datalists.price + "</td>";
               innerHtml += "    <td>" + datalists.field01 + "</td>";
               innerHtml += "    <td>" + datalists.field02 + "</td>";
+
+              if (datalists.traded == 0) {
+                innerHtml += " <td><button class=\"btn btn-block btn-info\">download</button></td>";
+              } else {
+                innerHtml += " <td><button class=\"btn btn-block btn-info disabled\">download</button></td>";
+              }
+
               innerHtml += "  </tr>";
               innerHtml += " </tbody>";
               $('#dataListTable').append(innerHtml);

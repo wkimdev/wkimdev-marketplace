@@ -1,69 +1,59 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>file upload test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>file upload test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
     integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
+
 <body>
-    <form id="myForm" action="/upload" method="post" name="myForm" encType="multipart/form-data" style="margin: auto;">
-        <div>
-            <label for="rating">file Upload:</label>
-            <input type="file" name="file_upload" style="margin-top:10px;" />
-        </div>
-        <input type="submit" value="Submit!">
-    </form>
-
+  <form id="myForm" action="/upload" method="post" name="myForm" encType="multipart/form-data" style="margin: auto;">
     <div>
-        <a id="fileDownload" onclick="filedown()" download>
-            <span><i class="fas fa-plus-circle"></i></span>
-        </a>
+      <label for="rating">file Upload:</label>
+      <input type="file" name="file_upload" style="margin-top:10px;" />
     </div>
-    
-    <script>
-         $('form').submit(function(event) {
-            event.preventDefault();
-            var form = $('form')[0];
-            var formData = new FormData(form);
+    <input type="submit" value="Submit!">
+  </form>
 
-            $.ajax({
-            url: '/products/addData',
-            data: formData,
-            contentType: false,
-            processData: false,
-            type: 'POST',
-            success: function(data) {
-                alert(data);
-            }
-            });
-        });
+  <div>
+    <a id="fileDownload" href="/products/fileDownload">
+      <span><i class="fas fa-plus-circle"></i></span>test.jpg
+    </a>
 
-        function filedown() {
-            $.ajax({
-                url: 'products/fileDownload',
-                success: function(result){
-                    alert(result);
-                },
-                error: function(err){
-                    console.log(err);
-                }
-                
-            })
-            // id,
-            // download file 형식으로 
-            //var filename = 'oraclenet-구성도.drawio.pdf';
-            // var filename = '7f03edc7b278a5c3aa859a796a953a39d6439628';
-            // // 애를 해석할 수 있는 애가 필요하다. 
-            // var filePath = '/downloadFile/' + filename;
-            // $('#fileDownload').attr('href', filePath);
+  </div>
+
+  <script>
+    $('form').submit(function(event) {
+      event.preventDefault();
+      var form = $('form')[0];
+      var formData = new FormData(form);
+
+      $.ajax({
+        url: '/products/addData',
+        data: formData,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        success: function(data) {
+          alert(data);
         }
-    </script>
+      });
+    });
+
+    function filedown() {
+      var path = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/test.jpg';
+      $('#fileDownload').attr('href', path)
+    }
+
+  </script>
 </body>
+
 </html>
