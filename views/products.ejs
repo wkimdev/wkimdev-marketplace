@@ -152,6 +152,7 @@
               const datalists = json.data[i];
               const purchased = 0;
 
+              console.log("datalists.traded checked :"+datalists);
 
               var innerHtml = "";
               innerHtml += " <tbody>";
@@ -162,10 +163,10 @@
               innerHtml += "    <td>" + datalists.field01 + "</td>";
               innerHtml += "    <td>" + datalists.field02 + "</td>";
 
-              if (datalists.traded == 0) {
-                innerHtml += " <td><button class=\"btn btn-block btn-info\">download</button></td>";
-              } else {
+              if (!datalists.saveFile) {
                 innerHtml += " <td><button class=\"btn btn-block btn-info disabled\">download</button></td>";
+              } else {
+                innerHtml += " <td><button class=\"btn btn-block btn-info\" onclick=\"fileDown()\">download</button></td>";
               }
 
               innerHtml += "  </tr>";
@@ -198,7 +199,7 @@
         var form = $('form')[0];
         var formData = new FormData(form);
 
-        alert(formData);
+        // alert(formData);
 
         $.ajax({
           url: '/products/addData',
@@ -207,7 +208,8 @@
           processData: false,
           type: 'POST',
           success: function(data) {
-            alert(data);
+            alert("success!");
+            location.reload();
           }
         });
       });
@@ -223,6 +225,10 @@
 
     function fn_changeAddType(arg) {
       getDataTypeFiled(arg.value);
+    }
+
+    function fileDown(){
+      alert('test!');
     }
 
     /* datatype에 대한 datafiled  */

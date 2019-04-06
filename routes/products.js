@@ -48,7 +48,8 @@ router.get('/fileDownload', function(req, res) {
 });
 
 router.get('/getData', function(req, res) {
-  var sql = 'SELECT di.id, dt.title, di.field01, di.field02, di.field03, di.field04, di.field05, di.provider, di.adddate ' +
+  var sql = 'SELECT di.id, dt.title, di.field01, di.field02, di.field03, di.field04, di.field05, ' + 
+            'di.provider, di.adddate, di.price, di.traded, di.saveFile ' +
     'FROM datainfo di JOIN datatype dt ON di.datatypeId = dt.id';
 
   dbPool.query(sql, function(err, rows) {
@@ -65,13 +66,21 @@ router.get('/getData', function(req, res) {
 });
 
 router.post('/addData', function(req, res) {
-  // console.log(req.body);
+  console.log(req.body);
   // console.log("ch1 :" + req.files.file_upload);
-  // console.log("ch2 :" + req.files.file_upload.name);
-  // console.log("ch3 :" + req.files.file_upload.md5);
+  console.log("ch2 :" + req.files.file_upload.name); // origin file name
+  console.log("ch3 :" + req.files.file_upload.md5);  // saved file name
+
+  if(!req.files.file_upload.name){
+    var originFile = 'null';
+    var saveFile = 'null';
+  } else {
+    var originFile = req.files.file_upload.name;
+    var saveFile = req.files.file_upload.md5;
+  }
 
   /** file download ing */
-  var file = req.files.file_upload.name;
+  var file = req.files.file_upload.md5;
 
   // hashFiles(file, function(err, hash) {
   if (Object.keys(req.files).length == 0) {
@@ -80,45 +89,50 @@ router.post('/addData', function(req, res) {
 
   let file_upload = req.files.file_upload;
   // 성공
-  let file_path = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/' + file;
+  // let file_path = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/' + file;
+  let file_path = 'c:/Users/rladn/git/wkimdev-marketplace/tmp/';
+  
   // 윈도우일 경우 로컬 경로 다시 확인!
   // let file_path = '/Users/rladn/git/wkimdev-marketplace/tmp/';
 
   // file_upload.mv(file_path + hash, function(err) {
-  file_upload.mv(file_path, function(err) {
+  file_upload.mv(file_path + file, function(err) {
     if (err)
       return res.status(500).send(err);
 
-    res.send('File uploaded!');
+    //res.send('File uploaded!');
+    console.log("File uploaded!");
   });
 
   // });
 
   /** data field add */
-  // var sql = " INSERT INTO datainfo SET ? ";
-  // var params = {
-  //   datatypeId: 1, //var datatypeId = req.body.datatypeId;
-  //   field01: req.body.field01,
-  //   field02: req.body.field01,
-  //   field03: req.body.field03,
-  //   field04: req.body.field04,
-  //   field05: req.body.field05,
-  //   price: req.body.price,
-  //   traded: false,
-  //   provider: 'bob', // 추후에 session 으로 change
-  //   adddate: new Date()
-  // };
+  var sql = " INSERT INTO datainfo SET ? ";
+  var params = {
+    datatypeId: 1, //var datatypeId = req.body.datatypeId;
+    field01: req.body.field01,
+    field02: req.body.field01,
+    field03: req.body.field03,
+    field04: req.body.field04,
+    field05: req.body.field05,
+    price: req.body.price,
+    traded: false,
+    provider: 'bob', // 추후에 session 으로 change
+    adddate: new Date(),
+    originFile: originFile,
+    saveFile: saveFile
+  };
 
-  // dbPool.query(
-  //   sql,
-  //   params,
-  //   function(err, results) {
-  //     if (err) {
-  //       console.log(err);
-  //     }
-  //     console.log(results);
-  //     res.json(results);
-  //   });
+  dbPool.query(
+    sql,
+    params,
+    function(err, results) {
+      if (err) {
+        console.log(err);
+      }
+      console.log(results);
+      res.send("data add successed! "+results);
+    });
 })
 
 module.exports = router;
