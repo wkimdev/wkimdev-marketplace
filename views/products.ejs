@@ -166,7 +166,9 @@
               if (!datalists.saveFile) {
                 innerHtml += " <td><button class=\"btn btn-block btn-info disabled\">download</button></td>";
               } else {
-                innerHtml += " <td><button class=\"btn btn-block btn-info\" onclick=\"fileDown()\">download</button></td>";
+                // innerHtml += " <td><button id=\"fileDownload\" class=\"btn btn-block btn-info\" onclick=\"fileDown("+ datalists.id +")\">download</button></td>";
+                innerHtml += " <td><button id=\"fileDownload\" onclick=\"location.href='/products/fileDownload/"+datalists.id+"'\" class=\"btn btn-block btn-info\">download</button></td>";
+                
               }
 
               innerHtml += "  </tr>";
@@ -227,8 +229,29 @@
       getDataTypeFiled(arg.value);
     }
 
-    function fileDown(){
-      alert('test!');
+    function fileDown(arg){
+      alert('test '+arg);
+
+      $.ajax({
+        url: '/products/fileDownload',
+        method: 'POST', //
+        dataType: 'json',
+        data: { dataId : arg }, //
+        success: function(result){
+          console.log(result.data[0].saveFile);
+          file = result.data[0].saveFile;
+          var filePath = "" + file;
+          // var filePath = '/downloadFile/' + filename;
+          $('#fileDownload').attr('href', filePath);  
+        },
+        error: function(err){
+          if(err){
+            console.log(err);
+          }
+        }
+
+
+      })
     }
 
     /* datatype에 대한 datafiled  */
@@ -280,27 +303,6 @@
     function addDataTypeContent() {
       var formData = new FormData();
       // 받아야 하는 값, -datatype - id
-      /*
-        provider VARCHAR(100) NOT NULL, --router
-        adddate datetime, --router
-        traded BOOLEAN NOT NULL, --router
-
-        datatypeId INT(100) NOT NULL, 
-        price VARCHAR(100) NOT NULL,
-        field01 VARCHAR(100) NOT NULL,
-        field02 VARCHAR(100) NOT NULL,
-        field03 VARCHAR(100) NOT NULL,
-        field04 VARCHAR(100) NOT NULL,
-        field05 VARCHAR(100) NOT NULL,  
-      */
-
-      // formData.append("datatypeId", $("#dtypeId").val()); // datatypeId..
-      // formData.append("price", $("#price").val());
-      // formData.append("field01", $("#dfield01").val());
-      // formData.append("field02", $("#dfield02").val());
-      // formData.append("field03", $("#dfield03").val());
-      // formData.append("field04", $("#dfield04").val());
-      // formData.append("field05", $("#dfield05").val());
       formData.append('test', 'this is test!');
 
       for (let [key, value] of formData.entries()) {
@@ -331,6 +333,7 @@
       //var filename = 'oraclenet-구성도.drawio.pdf';
       var filename = '7f03edc7b278a5c3aa859a796a953a39d6439628';
       // 애를 해석할 수 있는 애가 필요하다. 
+      var path = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/test.jpg';
       var filePath = '/downloadFile/' + filename;
       $('#fileDownload').attr('href', filePath);
     }

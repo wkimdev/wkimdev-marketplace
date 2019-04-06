@@ -23,28 +23,56 @@ router.get('/', function(req, res) {
   });
 });
 
-router.get('/fileDownload', function(req, res) {
+router.all('/fileDownload/:id', function(req, res) {
+  /**
+   * 선택한 데이터의 id를 가져온다.
+   * id에 대한 filename, savefile을 가져온다
+   * savedfile NAME명으로 파일 path를 선언
+   * filepath만 리턴해준다. 
+   * 나머지는 클라에서 path를 받아 처리
+   */
+  // console.log(req.params.id);
+  var dataId = req.params.id;
+  console.log(dataId);
 
-  origFileNm = 'test.jpg';
-  savedFileNm = 'e089ab3ba83bf8a90b69c92d23cf3611cae8953f';
-  savedPath = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp';
+  var sql = 'SELECT originFile, saveFile FROM datainfo WHERE id = ?';
+  var param = [ dataId ];
+
+  dbPool.query(sql, param, function(err, rows){
+    if (err) {
+      console.log(err);
+    }
+    // var result = {
+    //   data: ''
+    // };
+    // result.data = rows;
+    // res.send(result);
+    console.log(rows);
+  
+  
+
+  origFileNm = rows[0].originFile;
+  savedFileNm = rows[0].saveFile;
+  savedPath = '/Users/rladn/git/wkimdev-marketplace/tmp';
 
   var file = savedPath + '/' + savedFileNm;
   console.log('file : ' + file);
 
-  // mimetype = mime.lookup(origFileNm);
-  // mimetype = mime.lookup(file)
-  // console.log('mimetype : ' + mimetype);
+  // // mimetype = mime.lookup(origFileNm);
+  // // mimetype = mime.lookup(file)
+  // // console.log('mimetype : ' + mimetype);
 
-  res.setHeader('Content-disposition', 'attachment; filename=' + origFileNm); // origFileNm으로 로컬PC에 파일 저장
+  // 어떻게 된거지??
+  // 아래 처럼 해야 원본 파일명을 다운로드 된다...
+  res.setHeader('Content-disposition', 'attachment; filename=' + encodeURI(origFileNm)); // origFileNm으로 로컬PC에 파일 저장
   res.setHeader('Content-type', 'image/jpeg');
 
-  const filePath = path.join(__dirname, 'e089ab3ba83bf8a90b69c92d23cf3611cae8953f');
+  const filePath = path.join(savedPath, savedFileNm);
 
   var filestream = fs.createReadStream(filePath);
   // 입력 스트림과 출력 스트림을 연결해준다. 
   filestream.pipe(res);
-
+  });
 });
 
 router.get('/getData', function(req, res) {
