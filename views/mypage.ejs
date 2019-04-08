@@ -90,25 +90,32 @@
   </div>
 
   <!--데이터 타입 추가 팝업-->
-  <% include ./templates/modals %>
+  <% include ./templates/footer %>
+  <% include ./templates/modal %>
 
   <!-- Placed at the end of the document so the pages load faster -->
   <script>
     $(function() {
       // test 
       getTraded();
+
+      $("#liTraded").click(function() {
+        getTraded();
+      });
+
     });
 
     function getTraded() {
       $.ajax({
-        url: '/getAjax',
+        url: '/products/getTradedList',
         data: {
           loginId: ''
         },
         type: 'POST',
         dataType: 'json',
         success: function(data) {
-
+          console.log(data);
+          // data가 존재할 경우 뿌려주기. 
         },
         error: function(error) {
           alert('Error occurred.');

@@ -1,5 +1,11 @@
 var express = require('express');
+var path = require('path');
 var router = express.Router();
+
+
+router.get('/test', function(req, res, next) {
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+});
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -22,8 +28,9 @@ router.get('/test', function(req, res) {
 
 router.get('/mypage', function(req, res, next) {
   res.render('mypage', {
-    loginId: req.session.user.id,
-    loginPw: req.session.user.pw
+    //loginId: req.session.user.id,
+    loginId: "bob",
+    //loginPw: req.session.user.pw
   });
 });
 

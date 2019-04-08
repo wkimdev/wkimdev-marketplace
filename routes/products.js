@@ -36,48 +36,41 @@ router.all('/fileDownload/:id', function(req, res) {
   console.log(dataId);
 
   var sql = 'SELECT originFile, saveFile FROM datainfo WHERE id = ?';
-  var param = [ dataId ];
+  var param = [dataId];
 
-  dbPool.query(sql, param, function(err, rows){
+  dbPool.query(sql, param, function(err, rows) {
     if (err) {
       console.log(err);
     }
-    // var result = {
-    //   data: ''
-    // };
-    // result.data = rows;
-    // res.send(result);
     console.log(rows);
-  
-  
 
-  origFileNm = rows[0].originFile;
-  savedFileNm = rows[0].saveFile;
-  savedPath = '/Users/rladn/git/wkimdev-marketplace/tmp';
+    origFileNm = rows[0].originFile;
+    savedFileNm = rows[0].saveFile;
+    savedPath = 'tmp/';
 
-  var file = savedPath + '/' + savedFileNm;
-  console.log('file : ' + file);
+    var file = savedPath + '/' + savedFileNm;
+    console.log('file : ' + file);
 
-  // // mimetype = mime.lookup(origFileNm);
-  // // mimetype = mime.lookup(file)
-  // // console.log('mimetype : ' + mimetype);
+    // // mimetype = mime.lookup(origFileNm);
+    // // mimetype = mime.lookup(file)
+    // // console.log('mimetype : ' + mimetype);
 
-  // 어떻게 된거지??
-  // 아래 처럼 해야 원본 파일명을 다운로드 된다...
-  res.setHeader('Content-disposition', 'attachment; filename=' + encodeURI(origFileNm)); // origFileNm으로 로컬PC에 파일 저장
-  res.setHeader('Content-type', 'image/jpeg');
+    // 어떻게 된거지??
+    // 아래 처럼 해야 원본 파일명을 다운로드 된다...
+    res.setHeader('Content-disposition', 'attachment; filename=' + encodeURI(origFileNm)); // origFileNm으로 로컬PC에 파일 저장
+    res.setHeader('Content-type', 'application/octet-stream');
 
-  const filePath = path.join(savedPath, savedFileNm);
+    const filePath = path.join(savedPath, savedFileNm);
 
-  var filestream = fs.createReadStream(filePath);
-  // 입력 스트림과 출력 스트림을 연결해준다. 
-  filestream.pipe(res);
+    var filestream = fs.createReadStream(filePath);
+    // 입력 스트림과 출력 스트림을 연결해준다. 
+    filestream.pipe(res);
   });
 });
 
 router.get('/getData', function(req, res) {
-  var sql = 'SELECT di.id, dt.title, di.field01, di.field02, di.field03, di.field04, di.field05, ' + 
-            'di.provider, di.adddate, di.price, di.traded, di.saveFile ' +
+  var sql = 'SELECT di.id, dt.title, di.field01, di.field02, di.field03, di.field04, di.field05, ' +
+    'di.provider, di.adddate, di.price, di.traded, di.saveFile ' +
     'FROM datainfo di JOIN datatype dt ON di.datatypeId = dt.id';
 
   dbPool.query(sql, function(err, rows) {
@@ -95,11 +88,10 @@ router.get('/getData', function(req, res) {
 
 router.post('/addData', function(req, res) {
   console.log(req.body);
-  // console.log("ch1 :" + req.files.file_upload);
-  console.log("ch2 :" + req.files.file_upload.name); // origin file name
-  console.log("ch3 :" + req.files.file_upload.md5);  // saved file name
+  // console.log("ch2 :" + req.files.file_upload.name); // origin file name
+  // console.log("ch3 :" + req.files.file_upload.md5); // saved file name
 
-  if(!req.files.file_upload.name){
+  if (!req.files.file_upload.name) {
     var originFile = 'null';
     var saveFile = 'null';
   } else {
@@ -116,12 +108,7 @@ router.post('/addData', function(req, res) {
   }
 
   let file_upload = req.files.file_upload;
-  // 성공
-  // let file_path = '/Users/doublechain/Documents/workspace/wkimdev-marketplace/tmp/' + file;
-  let file_path = 'c:/Users/rladn/git/wkimdev-marketplace/tmp/';
-  
-  // 윈도우일 경우 로컬 경로 다시 확인!
-  // let file_path = '/Users/rladn/git/wkimdev-marketplace/tmp/';
+  let file_path = 'tmp/';
 
   // file_upload.mv(file_path + hash, function(err) {
   file_upload.mv(file_path + file, function(err) {
@@ -159,7 +146,7 @@ router.post('/addData', function(req, res) {
         console.log(err);
       }
       console.log(results);
-      res.send("data add successed! "+results);
+      res.send("data add successed! " + results);
     });
 })
 

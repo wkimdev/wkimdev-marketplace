@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <% include ./templates/head %>
+<template>
+    <head>
+  <!-- <% include ./templates/head %> -->
 </head>
 
 <body>
@@ -53,51 +51,32 @@
         <h5>page navigation</h5>
       </main>
 
-      <!-- <form id="myForm" action="/upload" method="post" name="myForm" encType="multipart/form-data"
-        style="margin: auto;">
-        <div>
-          <label for="price">Price:</label>
-          <input type="text" id="price" name="price">
-        </div>
-        <div>
-          <label for="title">Title:</label>
-          <input type="text" id="title" name="title">
-        </div>
-        <div>
-          <label for="field01">field01:</label>
-          <input type="text" id="field01" name="field01">
-        </div>
-        <div>
-          <label for="field02">field02:</label>
-          <input type="text" id="field02" name="field02">
-        </div>
-        <div>
-          <label for="field03">field03:</label>
-          <input type="text" id="field03" name="field03">
-        </div>
-        <div>
-          <label for="field04">field04:</label>
-          <input type="text" id="field04" name="field04">
-        </div>
-        <div>
-          <label for="field05">field05:</label>
-          <input type="text" id="field05" name="field05">
-        </div>
-        <div>
-          <label for="rating">file Upload:</label>
-          <input type="file" name="file_upload" style="margin-top:10px;" />
-        </div>
-
-        <input type="submit" value="Submit!">
-      </form> -->
 
     </div>
   </div>
 
 
-
   <!--데이터 타입 추가 팝업-->
-  <% include ./templates/modals %>
+  <% include ./templates/modals %>    
+
+
+
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style>
+
+</style>
+
+<!DOCTYPE html>
+<html>
+
+
 
   <script>
     var loginId = "<%=loginId %>";
