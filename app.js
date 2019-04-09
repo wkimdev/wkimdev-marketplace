@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 // router history mode
-app.use(require('connect-history-api-fallback')())
+// app.use(require('connect-history-api-fallback')())
 
 // file download
 app.use('/downloadFile', express.static('tmp'));

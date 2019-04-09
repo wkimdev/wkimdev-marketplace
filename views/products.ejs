@@ -52,45 +52,6 @@
         </div>
         <h5>page navigation</h5>
       </main>
-
-      <!-- <form id="myForm" action="/upload" method="post" name="myForm" encType="multipart/form-data"
-        style="margin: auto;">
-        <div>
-          <label for="price">Price:</label>
-          <input type="text" id="price" name="price">
-        </div>
-        <div>
-          <label for="title">Title:</label>
-          <input type="text" id="title" name="title">
-        </div>
-        <div>
-          <label for="field01">field01:</label>
-          <input type="text" id="field01" name="field01">
-        </div>
-        <div>
-          <label for="field02">field02:</label>
-          <input type="text" id="field02" name="field02">
-        </div>
-        <div>
-          <label for="field03">field03:</label>
-          <input type="text" id="field03" name="field03">
-        </div>
-        <div>
-          <label for="field04">field04:</label>
-          <input type="text" id="field04" name="field04">
-        </div>
-        <div>
-          <label for="field05">field05:</label>
-          <input type="text" id="field05" name="field05">
-        </div>
-        <div>
-          <label for="rating">file Upload:</label>
-          <input type="file" name="file_upload" style="margin-top:10px;" />
-        </div>
-
-        <input type="submit" value="Submit!">
-      </form> -->
-
     </div>
   </div>
 
@@ -179,16 +140,6 @@
       /* test code */
       $('form').submit(function(event) {
         event.preventDefault();
-        //collect the form data using Id Selector what ever data you need to send to server
-        // let price = $('#price').val();
-        // let title = $('#title').val();
-        // let field01 = $('#field01').val();
-        // let field02 = $('#field02').val();
-        // let field03 = $('#field03').val();
-        // let field04 = $('#field04').val();
-        // let field05 = $('#field05').val();
-        // let file = $("input[name=file_upload]")[0].files[0];
-
         var form = $('form')[0];
         var formData = new FormData(form);
 

@@ -2,42 +2,20 @@
 <html>
 
 <head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
   <% include ./templates/head %>
+
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <!-- <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script> -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
   <style>
-    .action-panel {
-      margin-bottom: 10px;
-      margin-right: 5px;
+    .container {
+      max-width: 3000px;
     }
 
-    .container-fluid {
-      max-width: 1360px;
-      padding: 0 1rem;
-    }
-
-    .col {
-      margin: 0.5rem 0;
-    }
-
-    .card__row {
-      position: relative;
-    }
-
-    .card__title {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      font-weight: bold;
-      background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
-      /* Chrome10-25,Safari5.1-6 */
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
-    }
-
-    .clamp-lines {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    .v-card__actions {
+      background-color: #00897b !important;
     }
 
   </style>
@@ -51,6 +29,7 @@
     <div class="row">
       <% include ./templates/sidebar %>
 
+
       <!-- Dashboard 영역 -->
       <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
         <div
@@ -60,40 +39,45 @@
           </div>
         </div>
 
-        <h2>Domains List</h2>
+        <h2>MarketPlace</h2>
+
         <div id="app">
+          <v-app id="inspire2">
+            <!-- <div>{{ message }}</div> -->
+            <v-container fluid grid-list-xl>
+              <v-layout row wrap>
+                <v-flex v-for="i in items.cnt" :key="`3${i}`" xs3>
 
-          {{ message }}
-          <table class="table table-responsive table-hover small">
-            <thead>
-              <tr>
-                <th v-for="key in headers"> {{ key }} </th>
-              </tr>
-            </thead>
+                  <v-card>
+                    <a v-bind:href="'/markets/products/' +items.itemNum[i-1]">
+                      <v-img src="https://cdn.vuetifyjs.com/images/cards/desert.jpg" aspect-ratio="2.75"></v-img>
+                    </a>
 
-            <tbody>
-              <tr v-for="list in roleList">
-                <td>{{ list.roleNo }}</td>
-                <td>{{ list.name }}</td>
-                <td>{{ list.status }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- <app-product-item></app-product-item> -->
+                    <v-card-title primary-title>
+                      <div>
+                        <h3 class="headline mb-0">{{ items.itemTitle[i-1] }} </h3>
+                        <div> {{ items.itemTitle[i-1] }} </div>
+                      </div>
+                    </v-card-title>
 
-          <!-- <div class="row action-panel" v-if="!loading">
-          <div class="col-xs-12">
-          </div>
-        </div> -->
+                    <v-card-actions>
+                      <v-btn flat color="white">ItemNo. {{ items.itemNum[i-1] }}</v-btn>
+                      <v-btn flat color="white">{{ items.itemPrice[i-1] }} OAS</v-btn>
+                      <v-icon class="white--text">add_shopping_cart</v-icon>
+                    </v-card-actions>
+                  </v-card>
 
-          <!-- 상품 등록 리스트 -->
-          <!-- <v-col lg3 md4 sm6 v-for="(prod, idx) in products" :key="prod.id">
-            <app-product-item :item="prod" :key="prod.id" :displayList="displayList"></app-product-item>
-          </v-col> -->
+                </v-flex>
 
+                <!-- end -->
+              </v-layout>
+            </v-container>
+          </v-app>
         </div>
 
-
+        <div>
+          <h1>footer</h1>
+        </div>
 
       </main>
 
@@ -103,59 +87,32 @@
   <!--데이터 타입 추가 팝업-->
   <% include ./templates/modals %>
 
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
   <script>
     var loginId = "<%=loginId %>";
 
+    // 루트 인스턴스 생성
+    var app = new Vue({
+      el: '#app',
+      data: {
+        items: {
+          cnt: 0,
+          itemPrice: [],
+          itemTitle: [],
+          itemNum: []
+        },
+      }
+    });
+
+    // 등록 - 루트 인스턴스를 사용하기 전에 컴포넌트를 등록한다.
+    Vue.component('app', {
+      template: '#app'
+    })
+
     $(function() {
-
-      // todo-item 이름을 가진 컴포넌트를 정의합니다
-      // 등록 - 루트 인스턴스를 사용하기 전에 컴포넌트를 등록한다. 
-      Vue.component('app-product-item', {
-        // template: ` <div v-for="(value, key) in object">
-        //               {{ key }}: {{ value }}
-        //             </div>`,
-        template: `<div class="checkbox-wrapper" @click="check">
-          <div :class="{ checkbox: true, checked: checked }"></div>
-          <div class="title">{{ dataId }}</div>
-        </div>`,
-        data() {
-          return {
-            // object: {
-            //   firstName: 'John',
-            //   lastName: 'Doe',
-            //   age: 30
-            // }
-            checked: false,
-            title: 'Check me',
-            dataId: 0
-          }
-        },
-        methods: {
-          check() {
-            this.checked = !this.checked;
-          }
-        },
-      })
-
-      // 루트 인스턴스 생성
-      var app = new Vue({
-        el: '#app',
-        data: {
-          message: '안녕하세요 Vue!',
-          headers: ['no', '권한명', '권한 상태'],
-          roleList: [{
-              roleNo: 'test',
-              name: 'testName',
-              status: 1
-            },
-            {
-              roleNo: 'test2',
-              name: 'testName2',
-              status: 1
-            }
-          ]
-        }
-      });
+      var _self = this;
+      _self.defaultView.app._data.message = 'reload again1!';
 
       // get products data list
       $.ajax({
@@ -163,18 +120,23 @@
         type: 'GET',
         dataType: 'json',
         success: function(result) {
-          console.log("111");
-          console.log(result);
           var json = result;
 
           if (!json) {
             alert('there is no product data! please add data');
           } else {
-            var _self = this;
+            _sc = _self;
+
+            var Itemlength = json.data.length;
+            _sc.defaultView.app._data.items.cnt = Itemlength;
+
+
             for (let i = 0; i < json.data.length; i++) {
-              _self.dataId = json.data[i].id;
+              const element = json.data[i];
+              _sc.defaultView.app._data.items.itemNum[i] = element.id;
+              _sc.defaultView.app._data.items.itemTitle[i] = element.title;
+              _sc.defaultView.app._data.items.itemPrice[i] = element.price;
             }
-            //alert("test! :" + _self.dataId);
           }
         },
         error: function(err) {

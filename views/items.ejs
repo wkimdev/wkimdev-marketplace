@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+
+  <% include ./templates/head %>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+  <style>
+    .container {
+      max-width: 3000px;
+    }
+
+    .v-card__actions {
+      background-color: #00897b !important;
+    }
+
+    .product-image {
+      width: 70%;
+    }
+
+    .item-title {
+      display: inline-block;
+      margin: 8px 0;
+    }
+
+    .price-tag {
+      height: auto;
+      font-size: 25px;
+      float: right;
+      margin-right: 0px;
+    }
+
+    .add-to-cart,
+    .share-button {
+      margin: -6px 6px 6px -6px;
+    }
+
+    .trand-item {
+      background-color: #00796b !important;
+    }
+
+    table {}
+
+  </style>
+</head>
+
+<body>
+  <!-- header -->
+  <header>
+    <% include ./templates/header %>
+
+  </header>
+
+  <div class=" container-fluid">
+    <div class="row">
+      <% include ./templates/sidebar %>
+
+      <!-- Dashboard 영역 -->
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">Products Detail</h1>
+
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+            </div>
+          </div>
+        </div>
+
+        <!-- vuejs  -->
+        <div id="app">
+          <v-app id="inspire2">
+            <v-container fluid grid-list-xl>
+              <!-- row wrap을 잡아줘야 한다!! -->
+              <v-layout row wrap>
+                <v-flex xs12>
+                  <!-- <h4 class="item-title">{{ item.title }}</h4> -->
+                  <h1>item title
+                    <!-- <v-chip outline label class="primary primary--text price-tag">${{ item.price }}</v-chip> -->
+                  </h1>
+                </v-flex>
+                <v-flex md6>
+                  <!-- <img class="product-image" :src="item.thumbnail_url" alt=""> -->
+                  <img class="product-image"
+                    src="https://pwa-shop.firebaseapp.com/assets/products/jsconf-detail_1024x1024.jpg">
+
+                </v-flex>
+                <v-flex md6>
+                  <div class="add-to-cart">
+                    <!-- <v-btn primary light @click.native="addItem" :disabled="item.quantity === 0"> -->
+                    <!-- 구매 했을 경우 비활성화 되야함. -->
+                    <v-btn class="trand-item" flat color="white" @click.native="">
+                      Trading
+                    </v-btn>
+                    <!-- <span>{{ item.quantity }} left in stock</span> -->
+                    <span>You can purchase data!</span>
+                  </div>
+                  <p>data type grid</p>
+                  <!-- datatype table -->
+                  <v-data-table :items="desserts" class="elevation-1" hide-actions hide-headers>
+                    <template v-slot:items="props">
+                      <td>{{ props.item.name }}</td>
+                      <td class="text-xs-right">{{ props.item.calories }}</td>
+                      <td class="text-xs-right">{{ props.item.fat }}</td>
+                    </template>
+                  </v-data-table>
+
+                  <br>
+                  <br>
+                  <div class="share-button">
+                    <v-btn class="trand-item" flat color="white" @click.native="">
+                      <v-icon>share</v-icon> Download File
+                    </v-btn>
+                  </div>
+                </v-flex>
+              </v-layout>
+
+              <v-layout row wrap>
+                <v-flex>
+                  <v-data-table :headers="headers" :items="medataData" class="elevation-1" id="dataInfoList">
+                    <template v-slot:items="props">
+                      <td>{{ props.item.name }}</td>
+                      <td class="text-xs-right">{{ props.item.test }}</td>
+                      <td class="text-xs-right"></td>
+                      <td class="text-xs-right"></td>
+                      <td class="text-xs-right"></td>
+                      <!-- <td class="text-xs-right">{{ props.item.protein }}</td>
+                      <td class="text-xs-right">{{ props.item.iron }}</td> -->
+                    </template>
+                  </v-data-table>
+                </v-flex>
+              </v-layout>
+
+            </v-container>
+          </v-app>
+        </div>
+      </main>
+    </div>
+  </div>
+
+
+
+  <!--데이터 타입 추가 팝업-->
+  <% include ./templates/modals %>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+  <script>
+    var itemId = "<%=itemId %>";
+
+    // 루트 인스턴스 생성
+    var app = new Vue({
+      el: ' #app',
+      data() {
+        return {
+          items: {
+            cnt: 0,
+            itemPrice: [],
+            itemTitle: [],
+            itemNum: []
+          },
+          headers: [{
+              text: 'Metadata Info',
+              align: 'left', // sortable: false, // value: 'name' }, { text: 'data' ,
+              sortable: false
+            },
+            {
+              text: 'test',
+              align: 'right',
+              sortable: false
+            },
+            {
+              text: '', //default for table layout
+              sortable: false
+            },
+            {
+              text: '',
+              sortable: false
+            },
+            {
+              text: '',
+              sortable: false
+            }
+
+          ],
+          desserts: [{
+            name: 'Privider',
+            calories: 159
+          }, {
+            name: 'Datetime',
+            calories: 237
+          }, {
+            name: 'Price (OSB)',
+            calories: 262
+          }, {
+            name: 'Traded',
+            calories: 305
+          }],
+          medataData: {
+            name: 'test',
+            test: 'test'
+          }
+          // [{
+          //     name: 'Title',
+          //     test: 'test'
+          //   },
+          //   {
+          //     name: 'Data Origin',
+          //     test: 'test'
+          //   },
+          //   {
+          //     name: 'Period',
+          //   },
+          //   {
+          //     name: 'Format',
+          //   },
+          //   {
+          //     name: 'Expired Date',
+          //   },
+          // ]
+        }
+      }
+    });
+
+    /* get datatype */
+    $(function() {
+      var _self = this;
+
+      console.log("itemId :" + itemId);
+
+      /** get datatype */
+      $.ajax({
+        url: '/domains/getDataTypeList',
+        type: 'GET',
+        dataType: 'json',
+        success: function(result) {
+          var json = result;
+          console.log(json);
+        },
+        error: function(err) {
+          alert('erroccurred ');
+        }
+      })
+
+      /** get datainfo */
+      $.ajax({
+        url: '/products/getDatainfo/' + itemId,
+        methid: 'GET',
+        // data: itemId,
+        dataType: 'json',
+        success: function(result) {
+          _sc = _self;
+          console.log("getDatainfo data");
+          console.log(result);
+          var json = result;
+          for (let i = 0; i < json.data.length; i++) {
+            _sc.medataData.name = json.data[i].title;
+            _sc.medataData.test = json.data[i].price;
+
+          }
+
+          // title ==> medataData.name
+          // 
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      })
+    })
+
+  </script>
+</body>
+
+</html>

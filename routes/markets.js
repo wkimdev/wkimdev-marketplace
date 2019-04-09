@@ -11,7 +11,6 @@ router.get('/', function(req, res) {
   });
 });
 
-
 /* get market datas */
 router.get('/products', function(req, res) {
   var sql = 'select di.id, dt.title, di.price' +
@@ -30,6 +29,15 @@ router.get('/products', function(req, res) {
     res.send(result);
   });
 
+});
+
+/* get product details */
+router.all('/products/:id', function(req, res) {
+  res.render('items', {
+    //loginId: req.session.user.id
+    loginId: 'bob',
+    itemId: req.params.id
+  });
 });
 
 module.exports = router;

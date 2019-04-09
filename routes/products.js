@@ -86,6 +86,26 @@ router.get('/getData', function(req, res) {
 
 });
 
+// get vs all??
+router.all('/getDatainfo/:id', function(req, res) {
+  var dataId = req.params.id;
+  var sql = 'SELECT id, title, provider, price, field01, field02, field03, field04, field05 ' +
+    'FROM datainfo WHERE id = ?';
+
+  dbPool.query(sql, dataId, function(err, rows) {
+    if (err) {
+      console.log(err);
+    }
+    var result = {
+      data: ''
+    };
+    result.data = rows;
+    console.log("11111");
+    console.log(result);
+    res.send(result);
+  })
+})
+
 router.post('/addData', function(req, res) {
   console.log(req.body);
   // console.log("ch2 :" + req.files.file_upload.name); // origin file name
