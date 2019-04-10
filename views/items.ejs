@@ -38,6 +38,15 @@
       margin: -6px 6px 6px -6px;
     }
 
+    .btn{
+      text-decoration: none;
+      font-size: 1.2rem;
+      color:white;
+      padding:6px 8px 6px 8px;
+      display:inline-block;
+      transition:all 0.1s;
+    }
+
     .trand-item {
       background-color: #00796b !important;
     }
@@ -109,13 +118,11 @@
 
                     <br />
                     <div class="share-button" id="filedonwBtn">
-                      <!-- <v-btn id="fileDownload" class="trand-item" flat color="white" href="`#${ filedownLink }`">
-                        <v-icon>share</v-icon>&nbsp;&nbsp; Download File
-                      </v-btn> -->
-                      <button class="trand-item" flat color="white" href="/products/fileDownload/10">
-                        <v-icon>share</v-icon>&nbsp;&nbsp; Download File
-                      </button>
-                    </div>
+                      <div v-for="items in itemId">
+                        <a class="btn trand-item" v-bind:href="'/products/fileDownload/'+ items">
+                          <v-icon>share</v-icon>&nbsp;&nbsp; Download File
+                        </a>
+                      </div>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -177,8 +184,7 @@
     var app = new Vue({
       el: ' #app',
       data() {
-        return {
-          filedownLink: '/products/fileDownload/' + itemId,
+        return { 
           isPurButtonDisabled: false,
           isDownButtonDisabled: true,
           itemId: '',
@@ -209,11 +215,10 @@
           ]
         };
       },
-      computed: {
+      created() {
+        console.log("created hook");
         // button을 임의로 그리기
-        // <button class="trand-item" flat color="white" href="/products/fileDownload/10">
-        //   <v-icon>share</v-icon>&nbsp;&nbsp; Download File
-        // </button>
+        this.fileDownload();
       },
       methods: {
         dataPurchase() {
