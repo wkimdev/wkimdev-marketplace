@@ -23,6 +23,22 @@ router.get('/', function(req, res) {
   });
 });
 
+/* post product buy */
+router.post('/purchase', function(req, res) {
+  var dataId = req.body.itemId;
+  var sql = 'UPDATE datainfo SET traded = 1 WHERE id = ?';
+
+  dbPool.query(sql, dataId, function(err, rows) {
+    if (err) {
+      console.log(err);
+    }
+    console.log(rows);
+    res.send(rows);
+
+  });
+});
+
+// get 일수도 있고, post일 수도 있고..??
 router.all('/fileDownload/:id', function(req, res) {
   /**
    * 선택한 데이터의 id를 가져온다.
@@ -32,6 +48,7 @@ router.all('/fileDownload/:id', function(req, res) {
    * 나머지는 클라에서 path를 받아 처리
    */
   // console.log(req.params.id);
+  // var dataId = req.params.id; //purchase 에선?
   var dataId = req.params.id;
   console.log(dataId);
 
@@ -89,8 +106,25 @@ router.get('/getData', function(req, res) {
 // get vs all??
 router.all('/getDatainfo/:id', function(req, res) {
   var dataId = req.params.id;
-  var sql = 'SELECT id, title, provider, price, field01, field02, field03, field04, field05 ' +
-    'FROM datainfo WHERE id = ?';
+  var sql = 'SELECT dt.title as dataTitle, ' +
+    ' dt.field01 as dtField01, ' +
+    ' dt.field02 as dtField02, ' +
+    ' dt.field03 as dtField03, ' +
+    ' dt.field04 as dtField04, ' +
+    ' dt.field05 as dtField05, ' +
+    ' dt.provider as dataProvider, ' +
+    ' dt.adddate as dataAddDate, ' +
+    ' di.traded as traded, ' +
+    ' di.price as dataPrice, ' +
+    ' di.field01 as dataField01, ' +
+    ' di.field02 as dataField02, ' +
+    ' di.field03 as dataField03, ' +
+    ' di.field04 as dataField04, ' +
+    ' di.field05 as dataField05 ' +
+    ' FROM datainfo di ' +
+    ' JOIN datatype dt ' +
+    '   ON di.datatypeId = dt.id ' +
+    'WHERE di.id = ? ';
 
   dbPool.query(sql, dataId, function(err, rows) {
     if (err) {
@@ -100,7 +134,7 @@ router.all('/getDatainfo/:id', function(req, res) {
       data: ''
     };
     result.data = rows;
-    console.log("11111");
+    console.log("call getDatainfo data");
     console.log(result);
     res.send(result);
   })

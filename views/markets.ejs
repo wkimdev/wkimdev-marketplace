@@ -7,7 +7,6 @@
   <% include ./templates/head %>
 
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-  <!-- <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script> -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
   <style>
     .container {
@@ -42,37 +41,39 @@
         <h2>MarketPlace</h2>
 
         <div id="app">
-          <v-app id="inspire2">
-            <!-- <div>{{ message }}</div> -->
-            <v-container fluid grid-list-xl>
-              <v-layout row wrap>
-                <v-flex v-for="i in items.cnt" :key="`3${i}`" xs3>
+          <template>
+            <v-app id="inspire2">
+              <!-- <div>{{ message }}</div> -->
+              <v-container fluid grid-list-xl>
+                <v-layout row wrap>
+                  <v-flex v-for="i in items.cnt" :key="`3${i}`" xs3>
 
-                  <v-card>
-                    <a v-bind:href="'/markets/products/' +items.itemNum[i-1]">
-                      <v-img src="https://cdn.vuetifyjs.com/images/cards/desert.jpg" aspect-ratio="2.75"></v-img>
-                    </a>
+                    <v-card>
+                      <a v-bind:href="'/markets/products/' +items.itemNum[i-1]">
+                        <v-img src="https://cdn.vuetifyjs.com/images/cards/desert.jpg" aspect-ratio="2.75"></v-img>
+                      </a>
 
-                    <v-card-title primary-title>
-                      <div>
-                        <h3 class="headline mb-0">{{ items.itemTitle[i-1] }} </h3>
-                        <div> {{ items.itemTitle[i-1] }} </div>
-                      </div>
-                    </v-card-title>
+                      <v-card-title primary-title>
+                        <div>
+                          <h3 class="headline mb-0">{{ items.itemTitle[i-1] }} </h3>
+                          <div> {{ items.itemTitle[i-1] }} </div>
+                        </div>
+                      </v-card-title>
 
-                    <v-card-actions>
-                      <v-btn flat color="white">ItemNo. {{ items.itemNum[i-1] }}</v-btn>
-                      <v-btn flat color="white">{{ items.itemPrice[i-1] }} OAS</v-btn>
-                      <v-icon class="white--text">add_shopping_cart</v-icon>
-                    </v-card-actions>
-                  </v-card>
+                      <v-card-actions>
+                        <v-btn flat color="white">ItemNo. {{ items.itemNum[i-1] }}</v-btn>
+                        <v-btn flat color="white">{{ items.itemPrice[i-1] }} OAS</v-btn>
+                        <v-icon class="white--text">add_shopping_cart</v-icon>
+                      </v-card-actions>
+                    </v-card>
 
-                </v-flex>
+                  </v-flex>
 
-                <!-- end -->
-              </v-layout>
-            </v-container>
-          </v-app>
+                  <!-- end -->
+                </v-layout>
+              </v-container>
+            </v-app>
+          </template>
         </div>
 
         <div>
@@ -111,6 +112,7 @@
     })
 
     $(function() {
+      //alert('222');
       var _self = this;
       _self.defaultView.app._data.message = 'reload again1!';
 

@@ -13,9 +13,7 @@ router.get('/', function(req, res) {
 
 /* get market datas */
 router.get('/products', function(req, res) {
-  var sql = 'select di.id, dt.title, di.price' +
-    ' from datainfo di ' +
-    ' join datatype dt on di.datatypeid = dt.id';
+  var sql = 'select id, title, price from datainfo order by id';
 
   dbPool.query(sql, function(err, rows) {
     if (err) {

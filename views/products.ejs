@@ -74,10 +74,11 @@
             alert("no datatype data!");
           } else {
 
-            // data purchased 여부 check 
             for (let i = 0; i < result.data.length; i++) {
+              const datatypeId = result.data[i].id;
               const element = result.data[i].title;
-              $("#dtype").append("<option value='" + element + "'>" + element + "</option>");
+              $("#dtype").append("<option id='" + datatypeId + "' value='" + element + "'>" + element +
+                "</option>");
             }
           }
 
@@ -116,8 +117,10 @@
               if (!datalists.saveFile) {
                 innerHtml += " <td><button class=\"btn btn-block btn-info disabled\">download</button></td>";
               } else {
-                // innerHtml += " <td><button id=\"fileDownload\" class=\"btn btn-block btn-info\" onclick=\"fileDown("+ datalists.id +")\">download</button></td>";
                 innerHtml +=
+                  // " <td><button id=\"fileDownload\" class=\"btn btn-block btn-info\" onclick=\"fileDown(" +
+                  // datalists.id + ")\">download</button></td>";
+                  innerHtml +=
                   " <td><button id=\"fileDownload\" onclick=\"location.href='/products/fileDownload/" +
                   datalists.id + "'\" class=\"btn btn-block btn-info\">download</button></td>";
 
@@ -168,7 +171,8 @@
     }
 
     function fn_changeAddType(arg) {
-      getDataTypeFiled(arg.value);
+      var datatypeId = $("#dtype").find("option:selected")[0].id;
+      getDataTypeFiled(datatypeId);
     }
 
     function fileDown(arg) {
@@ -176,7 +180,7 @@
 
       $.ajax({
         url: '/products/fileDownload',
-        method: 'POST', //
+        method: 'POST',
         dataType: 'json',
         data: {
           dataId: arg
@@ -193,9 +197,8 @@
             console.log(err);
           }
         }
-
-
       })
+
     }
 
     /* datatype에 대한 datafiled  */
@@ -206,10 +209,11 @@
         type: 'GET',
         dataType: 'json',
         data: {
-          datatype: arg
+          datatypeId: arg
         },
         success: function(result) {
           var json = result.data[0];
+          console.log("data list checked : " + json);
           var dtypeId = json.id;
           var arr = [json.field01, json.field02, json.field03, json.field04, json.field05];
 

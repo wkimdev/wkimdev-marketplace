@@ -29,12 +29,12 @@ router.get('/getDataTypeList', function(req, res) {
 /* 
  * get datatype filed
  */
-router.get('/getDataTypeField', function(req, res){
-  console.log(req.query.datatype);
-  var param = req.query.datatype;
-  var sql = 'select id, field01, field02, field03, field04, field05  from datatype where title = ?';
+router.get('/getDataTypeField', function(req, res) {
+  console.log(req.query.datatypeId);
+  var param = req.query.datatypeId;
+  var sql = 'select id, field01, field02, field03, field04, field05  from datatype where id = ?';
 
-  dbPool.query(sql, param, function(err, rows){
+  dbPool.query(sql, param, function(err, rows) {
     if (err) {
       console.log(err);
     }

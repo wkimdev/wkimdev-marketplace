@@ -2,12 +2,12 @@
 <html>
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet" />
 
   <% include ./templates/head %>
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet" />
   <style>
     .container {
       max-width: 3000px;
@@ -45,13 +45,15 @@
     table {}
 
   </style>
+  <scrip>
+
+  </scrip>
 </head>
 
 <body>
   <!-- header -->
   <header>
     <% include ./templates/header %>
-
   </header>
 
   <div class=" container-fluid">
@@ -65,83 +67,103 @@
           <h1 class="h2">Products Detail</h1>
 
           <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group mr-2">
-            </div>
+            <div class="btn-group mr-2"></div>
           </div>
         </div>
 
         <!-- vuejs  -->
+
         <div id="app">
-          <v-app id="inspire2">
-            <v-container fluid grid-list-xl>
-              <!-- row wrap을 잡아줘야 한다!! -->
-              <v-layout row wrap>
-                <v-flex xs12>
-                  <!-- <h4 class="item-title">{{ item.title }}</h4> -->
-                  <h1>item title
-                    <!-- <v-chip outline label class="primary primary--text price-tag">${{ item.price }}</v-chip> -->
-                  </h1>
-                </v-flex>
-                <v-flex md6>
-                  <!-- <img class="product-image" :src="item.thumbnail_url" alt=""> -->
-                  <img class="product-image"
-                    src="https://pwa-shop.firebaseapp.com/assets/products/jsconf-detail_1024x1024.jpg">
+          <template>
+            <v-app id="inspire2" style="height: 650px;">
+              <v-container fluid grid-list-xl>
+                <!-- row wrap을 잡아줘야 한다!! -->
+                <v-layout row wrap>
+                  <v-flex xs12>
+                    <h1>
+                      {{ itemTitle  }}
+                    </h1>
+                  </v-flex>
+                  <v-flex md6>
+                    <!-- <img class="product-image" :src="item.thumbnail_url" alt=""> -->
+                    <img class="product-image"
+                      src="https://pwa-shop.firebaseapp.com/assets/products/jsconf-detail_1024x1024.jpg">
+                  </v-flex>
+                  <v-flex md6>
+                    <div class="add-to-cart">
+                      <!-- <v-btn primary light @click.native="addItem" :disabled="item.quantity === 0"> -->
+                      <!-- 구매 했을 경우 비활성화 되야함. -->
+                      <v-btn class="trand-item" flat color="white" @click.native="dataPurchase()"
+                        v-bind:disabled="isPurButtonDisabled">
+                        Trading
+                      </v-btn>
+                      <span>{{ purMessage }}</span>
+                    </div>
+                    <!-- datatype table -->
+                    <v-data-table :items="datatypes" class="elevation-1" hide-actions hide-headers>
+                      <template v-slot:items="props">
+                        <td>{{ props.item.name }}</td>
+                        <td class="text-xs-left">{{ props.item.value }}</td>
+                      </template>
+                    </v-data-table>
 
-                </v-flex>
-                <v-flex md6>
-                  <div class="add-to-cart">
-                    <!-- <v-btn primary light @click.native="addItem" :disabled="item.quantity === 0"> -->
-                    <!-- 구매 했을 경우 비활성화 되야함. -->
-                    <v-btn class="trand-item" flat color="white" @click.native="">
-                      Trading
-                    </v-btn>
-                    <!-- <span>{{ item.quantity }} left in stock</span> -->
-                    <span>You can purchase data!</span>
-                  </div>
-                  <p>data type grid</p>
-                  <!-- datatype table -->
-                  <v-data-table :items="desserts" class="elevation-1" hide-actions hide-headers>
-                    <template v-slot:items="props">
-                      <td>{{ props.item.name }}</td>
-                      <td class="text-xs-right">{{ props.item.calories }}</td>
-                      <td class="text-xs-right">{{ props.item.fat }}</td>
-                    </template>
-                  </v-data-table>
-
-                  <br>
-                  <br>
-                  <div class="share-button">
-                    <v-btn class="trand-item" flat color="white" @click.native="">
-                      <v-icon>share</v-icon> Download File
-                    </v-btn>
-                  </div>
-                </v-flex>
-              </v-layout>
-
-              <v-layout row wrap>
-                <v-flex>
-                  <v-data-table :headers="headers" :items="medataData" class="elevation-1" id="dataInfoList">
-                    <template v-slot:items="props">
-                      <td>{{ props.item.name }}</td>
-                      <td class="text-xs-right">{{ props.item.test }}</td>
-                      <td class="text-xs-right"></td>
-                      <td class="text-xs-right"></td>
-                      <td class="text-xs-right"></td>
-                      <!-- <td class="text-xs-right">{{ props.item.protein }}</td>
-                      <td class="text-xs-right">{{ props.item.iron }}</td> -->
-                    </template>
-                  </v-data-table>
-                </v-flex>
-              </v-layout>
-
-            </v-container>
-          </v-app>
+                    <br />
+                    <div class="share-button">
+                      <!-- <v-btn id="fileDownload" class="trand-item" flat color="white" href="`#${ filedownLink }`">
+                        <v-icon>share</v-icon>&nbsp;&nbsp; Download File
+                      </v-btn> -->
+                      <button class="trand-item" flat color="white" href="/products/fileDownload/10">
+                        <v-icon>share</v-icon>&nbsp;&nbsp; Download File
+                      </button>
+                    </div>
+                  </v-flex>
+                </v-layout>
+              </v-container>
+            </v-app>
+          </template>
         </div>
+
+        <br />
+        <table class="table table-bordered" id="datainfoTable">
+          <colgroup>
+            <col style="width: 20%" />
+            <col style="width: 80%" />
+          </colgroup>
+          <thead>
+            <tr>
+              <td colspan="2" style="background-color: #efefef;">
+                Metadata Info
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th id="thField01" style="background-color: #efefef;"></th>
+              <td id="tdField01"></td>
+            </tr>
+            <tr>
+              <th id="thField02" style="background-color: #efefef;"></th>
+              <td id="tdField02"></td>
+            </tr>
+            <tr>
+              <th id="thField03" style="background-color: #efefef;"></th>
+              <td id="tdField03"></td>
+            </tr>
+            <tr>
+              <th id="thField04" style="background-color: #efefef;"></th>
+              <td id="tdField04"></td>
+            </tr>
+            <tr>
+              <th id="thField05" style="background-color: #efefef;"></th>
+              <td id="tdField05"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <a id="fileDownload"></a>
       </main>
     </div>
   </div>
-
-
 
   <!--데이터 타입 추가 팝업-->
   <% include ./templates/modals %>
@@ -149,87 +171,73 @@
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
   <script>
-    var itemId = "<%=itemId %>";
+    var itemId = '<%=itemId %>';
 
     // 루트 인스턴스 생성
     var app = new Vue({
       el: ' #app',
       data() {
         return {
+          filedownLink: '/products/fileDownload/' + itemId,
+          isPurButtonDisabled: false,
+          isDownButtonDisabled: true,
+          itemId: '',
+          itemTitle: '',
+          purMessage: 'You can purchase data!',
           items: {
             cnt: 0,
             itemPrice: [],
             itemTitle: [],
             itemNum: []
           },
-          headers: [{
-              text: 'Metadata Info',
-              align: 'left', // sortable: false, // value: 'name' }, { text: 'data' ,
-              sortable: false
+          datatypes: [{
+              name: 'Privider',
+              value: ''
             },
             {
-              text: 'test',
-              align: 'right',
-              sortable: false
+              name: 'Datetime',
+              value: ''
             },
             {
-              text: '', //default for table layout
-              sortable: false
+              name: 'Price (OSB)',
+              value: ''
             },
             {
-              text: '',
-              sortable: false
-            },
-            {
-              text: '',
-              sortable: false
+              name: 'Traded',
+              value: ''
             }
+          ]
+        };
+      },
+      methods: {
+        dataPurchase() {
+          var itemId = this.itemId;
 
-          ],
-          desserts: [{
-            name: 'Privider',
-            calories: 159
-          }, {
-            name: 'Datetime',
-            calories: 237
-          }, {
-            name: 'Price (OSB)',
-            calories: 262
-          }, {
-            name: 'Traded',
-            calories: 305
-          }],
-          medataData: {
-            name: 'test',
-            test: 'test'
-          }
-          // [{
-          //     name: 'Title',
-          //     test: 'test'
-          //   },
-          //   {
-          //     name: 'Data Origin',
-          //     test: 'test'
-          //   },
-          //   {
-          //     name: 'Period',
-          //   },
-          //   {
-          //     name: 'Format',
-          //   },
-          //   {
-          //     name: 'Expired Date',
-          //   },
-          // ]
+          $.ajax({
+            url: '/products/purchase',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+              itemId: itemId
+            },
+            success: function(result) {
+              alert("data purchase success!!");
+              location.reload();
+
+            },
+            error: function(err) {
+              console.log(err);
+            }
+          })
         }
-      }
+      },
     });
+
 
     /* get datatype */
     $(function() {
       var _self = this;
-
-      console.log("itemId :" + itemId);
+      _self.defaultView.app.itemId = itemId;
 
       /** get datatype */
       $.ajax({
@@ -243,7 +251,7 @@
         error: function(err) {
           alert('erroccurred ');
         }
-      })
+      });
 
       /** get datainfo */
       $.ajax({
@@ -253,23 +261,66 @@
         dataType: 'json',
         success: function(result) {
           _sc = _self;
-          console.log("getDatainfo data");
-          console.log(result);
           var json = result;
+          // alert(_sc.defaultView.app.datatypes.length);
+          // var dataMap = _sc.defaultView.app.datatypes.length;
+          // var dataList = _sc.defaultView.app.datatypes;
+          // for (let j = 0; j < dataMap.length; j++) {
+          //   dataList = json.data[0].
+
+          // }
+          var dataArr = new Array();
+
           for (let i = 0; i < json.data.length; i++) {
-            _sc.medataData.name = json.data[i].title;
-            _sc.medataData.test = json.data[i].price;
+            _sc.defaultView.app.itemTitle = json.data[i].dataTitle;
+            if (json.data[0].traded == 1) {
+              _sc.defaultView.app.isPurButtonDisabled = true
+              _sc.defaultView.app.purMessage = 'Youre data already traded'
+              _sc.defaultView.app.isDownButtonDisabled = false;
+            }
+
+            dataArr[0] = json.data[0].dataProvider;
+            dataArr[1] = json.data[0].dataAddDate;
+            dataArr[2] = json.data[0].dataPrice;
+            if (json.data[0].traded == 0) {
+              dataArr[3] = 'data not traded..';
+            } else {
+              dataArr[3] = 'data trading!';
+            }
+
+            // datatype
+            $("#thField01").text(json.data[i].dtField01);
+            $("#thField02").text(json.data[i].dtField02);
+            $("#thField03").text(json.data[i].dtField03);
+            $("#thField04").text(json.data[i].dtField04);
+            $("#thField05").text(json.data[i].dtField05);
+
+            // datainfo
+            $("#tdField01").text(json.data[i].dataField01);
+            $("#tdField02").text(json.data[i].dataField02);
+            $("#tdField03").text(json.data[i].dataField03);
+            $("#tdField04").text(json.data[i].dataField04);
+            $("#tdField05").text(json.data[i].dataField05);
 
           }
 
-          // title ==> medataData.name
-          // 
+          // data header 
+          var dataMap = _sc.defaultView.app.datatypes;
+          for (let k = 0; k < 4; k++) {
+            console.log(dataArr);
+            console.log(dataArr[k]);
+            dataMap[k].value = dataArr[k];
+          }
+
         },
         error: function(err) {
           console.log(err);
+          // traded 상태값 바뀜
+          // download 버튼 활성화 
+          // 계정 어카운트 차감... --> 이거 안해놨넹... 
         }
-      })
-    })
+      });
+    });
 
   </script>
 </body>
