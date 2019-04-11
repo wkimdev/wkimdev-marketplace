@@ -14,6 +14,7 @@ var indexRouter = require('./routes/index');
 var domainRouter = require('./routes/domains');
 var productRouter = require('./routes/products');
 var marketRouter = require('./routes/markets');
+var userRouter = require('./routes/user');
 
 var app = express();
 
@@ -63,6 +64,8 @@ app.use('/', indexRouter);
 app.use('/domains', domainRouter);
 app.use('/products', productRouter);
 app.use('/markets', marketRouter);
+app.use('/users', userRouter);
+
 
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));

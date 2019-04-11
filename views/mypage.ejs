@@ -25,6 +25,7 @@
     }
 
   </style>
+
 </head>
 
 <body>
@@ -51,16 +52,17 @@
 
         <section class="content">
           <div class="row">
-            <div class="col-xs-12">
+            <div class="col-lg-12">
               <div class="box">
                 <div class="box-body table-responsive">
                   <div role="tabpanel">
                     <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px;">
+                    <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px; margin-left: 20px">
                       <li role="presentation" class="active"><a href="#traded" id="liTraded" aria-controls="traded"
-                          role="tab" data-toggle="tab" aria-expanded="true">Traded</a></li>
-                      <li role="presentation" class=""><a href="#uploaded" id="liUploaded" aria-controls="uploaded"
-                          role="tab" data-toggle="tab" aria-expanded="false">Uploaded</a></li>
+                          role="tab" data-toggle="tab" aria-expanded="true">Traded</a></li> &nbsp;
+                      <li role="presentation" class=""><a href="#uploaded" id="UploadedList" aria-controls="uploaded"
+                          role="tab" data-toggle="tab" aria-expanded="false">Uploaded</a>
+                      </li>
                     </ul>
 
                     <!-- Tab panes -->
@@ -72,7 +74,6 @@
                       <div role="tabpanel" class="tab-pane" id="uploaded">
                         <!-- uploaded Datas -->
                       </div>
-
                     </div>
 
                   </div>
@@ -89,38 +90,217 @@
     </div>
   </div>
 
-  <!--데이터 타입 추가 팝업-->
-  <% include ./templates/footer %>
-  <% include ./templates/modal %>
 
-  <!-- Placed at the end of the document so the pages load faster -->
   <script>
+    var loginId = "<%=loginId %>";
+
     $(function() {
-      // test 
-      getTraded();
+      // open traded tap
 
-      $("#liTraded").click(function() {
-        getTraded();
+      // open uploadlist tap 
+      $("#UploadedList").click(function() {
+        UploadedList();
       });
-
     });
 
-    function getTraded() {
+    function UploadedList() {
+      var buyUser = this.loginId;
+      var arr = new Array();
+
       $.ajax({
-        url: '/products/getTradedList',
+        url: '/users/myUploadList',
         data: {
-          loginId: ''
+          buyUser: buyUser
         },
         type: 'POST',
         dataType: 'json',
-        success: function(data) {
-          console.log(data);
-          // data가 존재할 경우 뿌려주기. 
+        success: function(result) {
+          var json = result;
+
+          $("#uploaded").empty();
+          var upInnerHtml = "";
+          upInnerHtml += "<div class=\"table-responsive\">";
+          upInnerHtml += " <table class=\"acdn-tbl table table-bordered\">";
+          upInnerHtml += "  <colgroup>";
+          upInnerHtml += "    <col style = \"width:14%\">";
+          upInnerHtml += "    <col style = \"width:16%\">";
+          upInnerHtml += "    <col style = \"width:10%\">";
+          upInnerHtml += "    <col style = \"width:10%\">";
+          upInnerHtml += "    <col style = \"width:16%\">";
+          upInnerHtml += "    <col style = \"width:14%\">";
+          upInnerHtml += "    <col style = \"width:10%\">";
+          upInnerHtml += "    <col style = \"width:10%\">";
+          upInnerHtml += "  </colgroup>";
+          upInnerHtml += "  <thead>";
+          upInnerHtml += "    <tr>";
+          upInnerHtml += "      <th style=\"background: #efefef;\">Type</th>";
+          upInnerHtml += "      <th style=\"background: #efefef;\">DateTime</th>";
+          upInnerHtml += "      <th style=\"background: #efefef;\">Price(OSB)</th>";
+          upInnerHtml += "      <th style=\"background: #efefef;\">Traded</th>";
+          upInnerHtml += "      <th style=\"background: #efefef;\">Traded Date</th>";
+          upInnerHtml += "      <th style=\"background: #efefef;\">Status</th>";
+          upInnerHtml += "      <th style=\"background: #efefef;\"></th>";
+          upInnerHtml += "      <th style=\"background: #efefef;\"></th>";
+          upInnerHtml += "    </tr>";
+          upInnerHtml += "  </thead>";
+          upInnerHtml += " <tbody>";
+
+          if (json.data.length == 0) {
+            upInnerHtml += "  <tr class=\"acdn-tit\">";
+            upInnerHtml += "    <td colspan=\"8\" align=\"center\"> NO DATA </td>";
+            upInnerHtml += "  </tr>";
+          } else if (json.data.length > 0) {
+            for (let i = 0; i < json.data.length; i++) {
+              var datainfo = json.data[i];
+              upInnerHtml += " <tr class=\"acdn-tit\" id = showDetail > ";
+              upInnerHtml += " <td>" + datainfo.title + "</td>";
+              upInnerHtml += " <td>" + datainfo.adddate + "</td>";
+              upInnerHtml += " <td>" + datainfo.price + "</td>";
+
+              var tradedVal = datainfo.traded == 1 ? "TRUE" : "FALSE";
+
+              upInnerHtml += " <td>" + tradedVal + "</td>";
+              var tradeTime = datainfo.buyDate === undefined ? '-' : datainfo.buyDate;
+              upInnerHtml += " <td>" + tradeTime + "</td>";
+              var statusVal = datainfo.traded == 1 ? "off sale" : "on sale";
+              upInnerHtml += " <td>" + statusVal + "</td>";
+              var delAble = statusVal == "off sale" ? "" : "disabled";
+              upInnerHtml += " <td><button class=\"btn-acdn btn btn-primary btn-xs\" onclick=\"dataDelete(" +
+                datainfo.dataId +
+                ")\" " + delAble + ">Delete</button></td>";
+              upInnerHtml +=
+                " <td><a href=\"#n\" value=\"" + datainfo.dataId +
+                "\" class=\"btn-acdn btn btn-primary btn-xs\" onclick = \"\">상세</a></td>";
+              upInnerHtml += " </tr>";
+
+              // test
+              upInnerHtml += " <tr class=\"acdn-cont\" style=\"display:none\">";
+              upInnerHtml += " <td colspan=\"8\">";
+              upInnerHtml += " <table class=\"table table-bordered\" id=\"detailTable" + datainfo.dataId +
+                "\">";
+              upInnerHtml += " <colgroup>";
+              upInnerHtml += "<col style=\"width:20%\">";
+              upInnerHtml += "<col style=\"width:80%\">";
+              upInnerHtml += " </colgroup>";
+              upInnerHtml += " <thead>";
+              upInnerHtml += " <tr>";
+              upInnerHtml += " <th colspan=\"2\" style=\"background: #efefef;\">Metadata Info</th>";
+              upInnerHtml += " </tr>";
+              upInnerHtml += " </thead>";
+              upInnerHtml += " <tbody>";
+              upInnerHtml += " <tr>";
+              upInnerHtml += " <th style=\"background: #efefef;\">Title</th>";
+              upInnerHtml += " <td id=\"dtTitle\"></td>";
+              upInnerHtml += " </tr>";
+              upInnerHtml += " <tr>";
+              upInnerHtml += " <th style=\"background: #efefef;\">Data Origin</th>";
+              upInnerHtml += " <td id=\"dtField01\"></td>";
+              upInnerHtml += " </tr>";
+              upInnerHtml += " <tr>";
+              upInnerHtml += " <th style=\"background: #efefef;\">Period</th>";
+              upInnerHtml += " <td id=\"dtField02\"></td>";
+              upInnerHtml += " </tr>";
+              upInnerHtml += " <tr>";
+              upInnerHtml += " <th style=\"background: #efefef;\">Format</th>";
+              upInnerHtml += " <td id=\"dtField03\"></td>";
+              upInnerHtml += " </tr>";
+              upInnerHtml += " <tr>";
+              upInnerHtml += " <th style=\"background: #efefef;\">Expiry Date</th>";
+              upInnerHtml += " <td id=\"dtField04\"></td>";
+              upInnerHtml += " </tr>";
+              upInnerHtml += " </tbody>";
+              upInnerHtml += " </table>";
+              upInnerHtml += " </td>";
+              upInnerHtml += " </tr>";
+            }
+          } else {
+            alert('조회 실패');
+          }
+          upInnerHtml += " </tbody>";
+          upInnerHtml += " </table>";
+          upInnerHtml += "</div>";
+
+          $("#uploaded").append(upInnerHtml);
+
+          acdnTbl();
+
         },
-        error: function(error) {
-          alert('Error occurred.');
+        error: function(err) {
+          console.log(err);
         }
+
       })
+    }
+
+    // ?
+    function acdnTbl() {
+      var btn = $('.btn-acdn');
+      btn.each(function() {
+        $(this).on('click', function() {
+          if (!$(this).closest('.acdn-tit').next('.acdn-cont').is(':visible')) {
+            $(this).closest('.acdn-tbl').find('.acdn-cont').hide();
+            // 데이터 맵핑 함수 발동 
+            // alert("test! :" + $(this).attr('value'));
+            showDetail($(this).attr('value'));
+            $(this).closest('.acdn-tit').next('.acdn-cont').show();
+
+          } else {
+            $(this).closest('.acdn-tit').next('.acdn-cont').hide();
+          }
+        });
+      });
+    }
+
+    // shwo detail table
+    function showDetail(arg) {
+      alert("dataId : " + arg);
+      var dataId = arg;
+      $.ajax({
+        url: '/products/getDatainfo/' + dataId,
+        methid: 'GET',
+        dataType: 'json',
+        success: function(result) {
+          var json = result;
+          var tableId = "#detailTable" + dataId;
+
+          for (let i = 0; i < json.data.length; i++) {
+            var datainfo = json.data[0];
+
+            $(tableId).find("#dtTitle").text(datainfo.dataField01);
+            $(tableId).find("#dtField01").text(datainfo.dataField02);
+            $(tableId).find("#dtField02").text(datainfo.dataField03);
+            $(tableId).find("#dtField03").text(datainfo.dataField04);
+            $(tableId).find("#dtField04").text(datainfo.dataField05);
+          }
+        },
+        error: function(err) {
+          console.log(err);
+        }
+      });
+
+    }
+
+    // data delete
+    function dataDelete(arg) {
+      var dataId = arg;
+
+      $.ajax({
+        url: '/products/deleteItem',
+        method: 'POST',
+        datatype: 'json',
+        data: {
+          dataId: dataId
+        },
+        success: function(result) {
+          alert("data delete completed!");
+          location.reload();
+        },
+        error: function(err) {
+          console.log(err);
+        }
+
+      })
+
     }
 
   </script>

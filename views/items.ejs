@@ -18,7 +18,7 @@
     }
 
     .product-image {
-      width: 70%;
+      width: 30%;
     }
 
     .item-title {
@@ -38,20 +38,22 @@
       margin: -6px 6px 6px -6px;
     }
 
-    .btn{
+    .btn {
       text-decoration: none;
       font-size: 1.2rem;
-      color:white;
-      padding:6px 8px 6px 8px;
-      display:inline-block;
-      transition:all 0.1s;
+      color: white;
+      padding: 6px 8px 6px 8px;
+      display: inline-block;
+      transition: all 0.1s;
+      /* disabled */
+      pointer-events: none;
+      cursor: default;
+      opacity: .4;
     }
 
     .trand-item {
       background-color: #00796b !important;
     }
-
-    table {}
 
   </style>
   <scrip>
@@ -94,14 +96,11 @@
                     </h1>
                   </v-flex>
                   <v-flex md6>
-                    <!-- <img class="product-image" :src="item.thumbnail_url" alt=""> -->
                     <img class="product-image"
                       src="https://pwa-shop.firebaseapp.com/assets/products/jsconf-detail_1024x1024.jpg">
                   </v-flex>
                   <v-flex md6>
                     <div class="add-to-cart">
-                      <!-- <v-btn primary light @click.native="addItem" :disabled="item.quantity === 0"> -->
-                      <!-- 구매 했을 경우 비활성화 되야함. -->
                       <v-btn class="trand-item" flat color="white" @click.native="dataPurchase()"
                         v-bind:disabled="isPurButtonDisabled">
                         Trading
@@ -117,12 +116,13 @@
                     </v-data-table>
 
                     <br />
-                    <div class="share-button" id="filedonwBtn">
-                      <div v-for="items in itemId">
-                        <a class="btn trand-item" v-bind:href="'/products/fileDownload/'+ items">
+                    <div class="share-button">
+                      <div v-bind=" itemId ">
+                        <a class="btn trand-item" v-bind:href="'/products/fileDownload/'+ itemId" disabled="disabled">
                           <v-icon>share</v-icon>&nbsp;&nbsp; Download File
                         </a>
                       </div>
+                    </div>
                   </v-flex>
                 </v-layout>
               </v-container>
@@ -179,14 +179,16 @@
   <script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
   <script>
     var itemId = '<%=itemId %>';
+    var loginId = "<%=loginId %>";
 
     // 루트 인스턴스 생성
     var app = new Vue({
       el: ' #app',
       data() {
-        return { 
+        return {
           isPurButtonDisabled: false,
           isDownButtonDisabled: true,
+          loginId: '',
           itemId: '',
           itemTitle: '',
           purMessage: 'You can purchase data!',
@@ -215,21 +217,18 @@
           ]
         };
       },
-      created() {
-        console.log("created hook");
-        // button을 임의로 그리기
-        this.fileDownload();
-      },
       methods: {
         dataPurchase() {
           var itemId = this.itemId;
+          var buyUser = this.loginId;
 
           $.ajax({
             url: '/products/purchase',
             method: 'POST',
             dataType: 'json',
             data: {
-              itemId: itemId
+              itemId: itemId,
+              buyUser: buyUser
             },
             success: function(result) {
               alert("data purchase success!!");
@@ -249,6 +248,7 @@
     $(function() {
       var _self = this;
       _self.defaultView.app.itemId = itemId;
+      _self.defaultView.app.loginId = loginId;
 
       /** get datatype */
       $.ajax({
@@ -273,13 +273,6 @@
         success: function(result) {
           _sc = _self;
           var json = result;
-          // alert(_sc.defaultView.app.datatypes.length);
-          // var dataMap = _sc.defaultView.app.datatypes.length;
-          // var dataList = _sc.defaultView.app.datatypes;
-          // for (let j = 0; j < dataMap.length; j++) {
-          //   dataList = json.data[0].
-
-          // }
           var dataArr = new Array();
 
           for (let i = 0; i < json.data.length; i++) {
@@ -297,6 +290,11 @@
               dataArr[3] = 'data not traded..';
             } else {
               dataArr[3] = 'data trading!';
+
+              // file download btn 활성화
+              $(".btn").css("pointer-events", "auto");
+              $(".btn").css("cursor", "");
+              $(".btn").css("opacity", "1");
             }
 
             // datatype
@@ -326,9 +324,6 @@
         },
         error: function(err) {
           console.log(err);
-          // traded 상태값 바뀜
-          // download 버튼 활성화 
-          // 계정 어카운트 차감... --> 이거 안해놨넹... 
         }
       });
     });

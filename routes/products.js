@@ -25,10 +25,12 @@ router.get('/', function(req, res) {
 
 /* post product buy */
 router.post('/purchase', function(req, res) {
-  var dataId = req.body.itemId;
-  var sql = 'UPDATE datainfo SET traded = 1 WHERE id = ?';
+  var itemId = req.body.itemId;
+  var buyUser = req.body.buyUser;
+  var params = [buyUser, itemId];
+  var sql = 'UPDATE datainfo SET traded = 1, buyDate = current_timestamp, buyUser = ? WHERE id = ?';
 
-  dbPool.query(sql, dataId, function(err, rows) {
+  dbPool.query(sql, params, function(err, rows) {
     if (err) {
       console.log(err);
     }
@@ -202,6 +204,19 @@ router.post('/addData', function(req, res) {
       console.log(results);
       res.send("data add successed! " + results);
     });
-})
+});
+
+router.post('/deleteItem', function(req, res) {
+  var dataId = req.body.dataId;
+  var sql = 'DELETE FROM datainfo WHERE id = ?';
+
+  dbPool.query(sql, dataId, function(err, rows) {
+    if (err) {
+      console.log(err);
+    }
+    console.log(rows);
+    res.send("data delete successed! " + rows);
+  });
+});
 
 module.exports = router;
