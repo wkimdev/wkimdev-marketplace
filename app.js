@@ -1,4 +1,17 @@
+/* =======================
+    LOAD THE CONFIG
+==========================*/
 process.env.NODE_ENV = (process.env.NODE_ENV && (process.env.NODE_ENV).trim().toLowerCase() == 'production') ? 'production' : 'development';
+
+// config load
+if (!process.env.NODE_ENV) {
+  global.config = require('./config/developer');
+} else if (process.env.NODE_ENV == 'production') {
+  global.config = require('./config/production');
+} else {
+  global.config = require('./config/developer');
+}
+console.log("environment config ::" + config.id);
 
 var createError = require('http-errors');
 var express = require('express');
@@ -22,8 +35,7 @@ var app = express();
 
 // view engine setup
 // ejs view => views, vue.js build => dist
-app.set('views', [path.join(__dirname, 'views'), path.join(__dirname, 'dist')]);
-
+//app.set('views', [path.join(__dirname, 'views'), path.join(__dirname, 'dist')]);
 
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
@@ -37,10 +49,10 @@ app.use(bodyParser.urlencoded({
 app.use('/downloadFile', express.static('tmp'));
 
 // default options
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: '/tmp/'
-}));
+// app.use(fileUpload({
+//   useTempFiles: true,
+//   tempFileDir: '/tmp/'
+// }));
 
 app.use(expressSession({
   secret: 'my key',
@@ -70,17 +82,6 @@ app.use('/transactions', transactionRouter);
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
-
-// config load
-if (!process.env.NODE_ENV) {
-  global.config = require('./config/developer');
-} else if (process.env.NODE_ENV == 'production') {
-  global.config = require('./config/production');
-} else {
-  global.config = require('./config/developer');
-}
-
-console.log("environment config >>>>>>> " + config.id);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
