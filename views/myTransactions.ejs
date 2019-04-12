@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <% include ./templates/head %>
+  <style>
+    .page-tab {
+      padding: 0;
+    }
+
+    .page-tab li {
+      display: inline-block;
+    }
+
+    .page-tab li a {
+      display: block;
+      padding: 5px 7px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .page-tab li.on a {
+      color: #185482;
+      border-bottom: 2px solid #185482;
+    }
+
+  </style>
+
+</head>
+
+<body>
+  <!-- header -->
+  <% include ./templates/header %>
+
+  <div class=" container-fluid">
+    <div class="row">
+      <% include ./templates/sidebar %>
+
+      <!-- Dashboard 영역 -->
+      <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+        <div
+          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <h1 class="h2">My Page</h1>
+        </div>
+
+        <section class="content-header">
+          <ul class="page-tab">
+            <li><a onclick="location.href='/mypage'">My Data</a> </li>
+            <li class="on"><a href="#">Transactions</a></li>
+          </ul>
+        </section>
+
+        <section class="content">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="box">
+                <div class="box-body table-responsive" id="tbTransactions">
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+
+
+    </div>
+
+
+  </div>
+
+  <script>
+    var loginId = "<%=loginId %>";
+
+    $(function() {
+      fnGetTransactions();
+    })
+
+    /* get transaction data from blockchain */
+    function fnGetTransactions() {
+      $.ajax({
+        url: '/transactions/getTransactionList',
+        type: 'GET',
+        dataType: 'json',
+        success: function(result) {
+          // alert(JSON.stringify(result));
+          var data = result;
+
+          $("#traded").empty();
+          var innerHtml = "";
+          innerHtml += "<div class=\"table-responsive\">";
+          innerHtml += " <table class=\"acdn-tbl table table-bordered\">";
+          innerHtml += " <colgroup>";
+          innerHtml += " <col style = \"width:15%\">";
+          innerHtml += " <col style = \"width:15%\">";
+          innerHtml += " <col style = \"width:30%\">";
+          innerHtml += " <col style = \"width:25%\">";
+          innerHtml += " <col style = \"width:15%\">";
+          innerHtml += " </colgroup>";
+          innerHtml += " <thead>";
+          innerHtml += " <tr>";
+          innerHtml += " <th style=\"background: #efefef;\">Action ID</th>";
+          innerHtml += " <th style=\"background: #efefef;\">Block ID</th>";
+          innerHtml += " <th style=\"background: #efefef;\">Transaction ID</th>";
+          innerHtml += " <th style=\"background: #efefef;\">Timestamp</th>";
+          innerHtml += " <th style=\"background: #efefef;\">Name</th>";
+          innerHtml += " </tr>";
+          innerHtml += " </thead>";
+          innerHtml += " <tbody>";
+          if (data.result == 'OK') {
+            for (var i = 0; i < data.rows.length; i++) {
+              var info = data.rows[i];
+              innerHtml
+                += "            <tr class=\" acdn-tit\">";
+              innerHtml += " <td>" + info[0] + "</td>";
+              innerHtml +=
+                " <td><a href=\"javascript:;\" onclick=\"location.href='<%=config.explorerUrl%>/search?q=" +
+                info[1] + "' \">" + info[1] + "</a></td>";
+              innerHtml +=
+                " <td><a href=\"javascript:;\" onclick=\"location.href='<%=config.explorerUrl%>/search?q=" +
+                info[2] + "' \">" + info[2] + "</a></td>";
+              innerHtml += " <td>" + info[3] + "</td>";
+              innerHtml += " <td>" + info[4] + "</td>";
+              innerHtml += " </tr>";
+            }
+          } else if (data.result == 'NONE') {
+            innerHtml += " <tr class=\"acdn-tit\">";
+            innerHtml += " <td colspan=\"5\" align=\"center\"> NO DATA </td>";
+            innerHtml += " </tr>";
+          } else {
+            alert('조회 실패');
+          }
+          innerHtml += " </tbody>";
+          innerHtml += " </table>";
+          innerHtml += "</div>";
+          $("#tbTransactions").append(innerHtml);
+
+        },
+        error: function(err) {
+          console.log(err);
+        }
+
+      })
+
+    }
+
+  </script>
+
+
+</body>
+
+</html>

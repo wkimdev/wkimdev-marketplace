@@ -30,4 +30,27 @@ router.post('/myUploadList', function(req, res) {
 
 });
 
+/** get my traded list */
+router.post('/myTradedList', function(req, res) {
+  var buyUser = req.body.buyUser;
+
+  var sql = " SELECT di.id as dataId, dt.title, di.adddate, di.price, di.traded, di.buyDate, di.buyUser, di.provider " +
+    "  FROM datainfo di " +
+    "  JOIN datatype dt " +
+    "    ON di.datatypeid = dt.id " +
+    " WHERE di.buyUser = ? ";
+
+  dbPool.query(sql, buyUser, function(err, rows) {
+    if (err) {
+      console.log(err);
+    }
+    var result = {
+      data: ''
+    };
+    result.data = rows;
+    res.send(result);
+  });
+
+});
+
 module.exports = router;

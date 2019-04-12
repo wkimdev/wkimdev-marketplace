@@ -9,12 +9,14 @@ var logger = require('morgan');
 var bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 
+var Eos = require("eosjs");
 
 var indexRouter = require('./routes/index');
 var domainRouter = require('./routes/domains');
 var productRouter = require('./routes/products');
 var marketRouter = require('./routes/markets');
 var userRouter = require('./routes/user');
+var transactionRouter = require('./routes/transaction');
 
 var app = express();
 
@@ -30,9 +32,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-
-// router history mode
-// app.use(require('connect-history-api-fallback')())
 
 // file download
 app.use('/downloadFile', express.static('tmp'));
@@ -65,11 +64,23 @@ app.use('/domains', domainRouter);
 app.use('/products', productRouter);
 app.use('/markets', marketRouter);
 app.use('/users', userRouter);
+app.use('/transactions', transactionRouter);
 
 
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+
+// config load
+if (!process.env.NODE_ENV) {
+  global.config = require('./config/developer');
+} else if (process.env.NODE_ENV == 'production') {
+  global.config = require('./config/production');
+} else {
+  global.config = require('./config/developer');
+}
+
+console.log("environment config >>>>>>> " + config.id);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -82,7 +93,6 @@ app.use(function(req, res, next) {
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
 
 // error handler
 app.use(function(err, req, res, next) {

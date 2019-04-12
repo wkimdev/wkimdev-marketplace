@@ -45,8 +45,8 @@
 
         <section class="content-header">
           <ul class="page-tab">
-            <li class="on"><a href="#">My Data</a> </li>
-            <li class="on"><a href="#">My Transaction</a> </li>
+            <li class="on"><a href="#">My Data</a></li>
+            <li><a onclick="location.href='/transactions/myTransactions'">Transactions</a></li>
           </ul>
         </section>
 
@@ -58,7 +58,7 @@
                   <div role="tabpanel">
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs" role="tablist" style="margin-bottom:20px; margin-left: 20px">
-                      <li role="presentation" class="active"><a href="#traded" id="liTraded" aria-controls="traded"
+                      <li role="presentation" class="active"><a href="#traded" id="TradedList" aria-controls="traded"
                           role="tab" data-toggle="tab" aria-expanded="true">Traded</a></li> &nbsp;
                       <li role="presentation" class=""><a href="#uploaded" id="UploadedList" aria-controls="uploaded"
                           role="tab" data-toggle="tab" aria-expanded="false">Uploaded</a>
@@ -95,13 +95,148 @@
     var loginId = "<%=loginId %>";
 
     $(function() {
+      TradedList();
+
       // open traded tap
+      $("#TradedList").click(function() {
+        TradedList();
+      });
 
       // open uploadlist tap 
       $("#UploadedList").click(function() {
         UploadedList();
       });
     });
+
+    function TradedList() {
+      var buyUser = this.loginId;
+
+      $.ajax({
+        url: '/users/myTradedList',
+        data: {
+          buyUser: buyUser
+        },
+        type: 'POST',
+        dataType: 'json',
+        success: function(result) {
+          var json = result;
+
+          $("#traded").empty();
+          var trInnerHtml = "";
+          trInnerHtml += "<div class=\"table-responsive\">";
+          trInnerHtml += " <table class=\"acdn-tbl table table-bordered\">";
+          trInnerHtml += " <colgroup>";
+          trInnerHtml += " <col style = \"width:14%\">";
+          trInnerHtml += " <col style = \"width:10%\">";
+          trInnerHtml += " <col style = \"width:16%\">";
+          trInnerHtml += " <col style = \"width:10%\">";
+          trInnerHtml += " <col style = \"width:10%\">";
+          trInnerHtml += " <col style = \"width:16%\">";
+          trInnerHtml += " <col style = \"width:14%\">";
+          trInnerHtml += " <col style = \"width:5%\">";
+          trInnerHtml += " <col style = \"width:5%\">";
+          trInnerHtml += " </colgroup>";
+          trInnerHtml += " <thead>";
+          trInnerHtml += " <tr>";
+          trInnerHtml += " <th style=\"background: #efefef;\">Type</th>";
+          trInnerHtml += " <th style=\"background: #efefef;\">Provider</th>";
+          trInnerHtml += " <th style=\"background: #efefef;\">DateTime</th>";
+          trInnerHtml += " <th style=\"background: #efefef;\">Price(OSB)</th>";
+          trInnerHtml += " <th style=\"background: #efefef;\">Traded</th>";
+          trInnerHtml += " <th style=\"background: #efefef;\">Traded Date</th>";
+          trInnerHtml += " <th style=\"background: #efefef;\">Status</th>";
+          trInnerHtml += " <th style=\"background: #efefef;\"></th>";
+          trInnerHtml += " <th style=\"background: #efefef;\"></th>";
+          trInnerHtml += " </tr>";
+          trInnerHtml += " </thead>";
+          trInnerHtml += " <tbody>";
+
+          if (json.data.length == 0) {
+            trInnerHtml += " <tr class=\"acdn-tit\">";
+            trInnerHtml += " <td colspan=\"8\" align=\"center\"> NO DATA </td>";
+            trInnerHtml += " </tr>";
+          } else if (json.data.length > 0) {
+            for (let i = 0; i < json.data.length; i++) {
+              var datainfo = json.data[i];
+              trInnerHtml += " <tr class=\"acdn-tit\" id = showDetail> ";
+              trInnerHtml += " <td>" + datainfo.title + "</td>";
+              trInnerHtml += " <td>" + datainfo.provider + "</td>";
+              trInnerHtml += " <td>" + datainfo.adddate + "</td>";
+              trInnerHtml += " <td>" + datainfo.price + "</td>";
+
+              var tradedVal = datainfo.traded == 1 ? "TRUE" : "FALSE";
+
+              trInnerHtml += " <td>" + tradedVal + "</td>";
+              var tradeTime = datainfo.buyDate === undefined ? '-' : datainfo.buyDate;
+              trInnerHtml += " <td>" + tradeTime + "</td>";
+              var statusVal = datainfo.traded == 1 ? "off sale" : "on sale";
+              trInnerHtml += " <td>" + statusVal + "</td>";
+              var delAble = statusVal == "off sale" ? "" : "disabled";
+              trInnerHtml +=
+                " <td><button class=\"btn btn-primary btn-xs\" onclick=fileDownload(" + datainfo.dataId +
+                ")>Download</button></td>";
+
+              trInnerHtml +=
+                " <td><a href=\"#n\" value=\"" + datainfo.dataId +
+                "\" class=\"btn-acdn btn btn-primary btn-xs\" onclick = \"\">상세</a></td>";
+              trInnerHtml += " </tr>";
+
+              trInnerHtml += " <tr class=\"acdn-cont\" style=\"display:none\">";
+              trInnerHtml += " <td colspan=\"8\">";
+              trInnerHtml += " <table class=\"table table-bordered\" id=\"detailTable" + datainfo.dataId + "\">";
+              trInnerHtml += " <colgroup>";
+              trInnerHtml += " <col style = \"width:20%\">";
+              trInnerHtml += " <col style = \"width:80%\">";
+              trInnerHtml += " </colgroup>";
+              trInnerHtml += " <thead>";
+              trInnerHtml += " <tr>";
+              trInnerHtml += " <th colspan=\"2\" style=\"background: #efefef;\">Metadata Info</th>";
+              trInnerHtml += " </tr>";
+              trInnerHtml += " </thead>";
+              trInnerHtml += " <tbody>";
+              trInnerHtml += " <tr>";
+              trInnerHtml += " <th style=\"background: #efefef;\">Title</th>";
+              trInnerHtml += " <td id=\"dtTitle\"></td>";
+              trInnerHtml += " </tr>";
+              trInnerHtml += " <tr>";
+              trInnerHtml += " <th style=\"background: #efefef;\">Data Origin</th>";
+              trInnerHtml += " <td id=\"dtField01\"></td>";
+              trInnerHtml += " </tr>";
+              trInnerHtml += " <tr>";
+              trInnerHtml += " <th style=\"background: #efefef;\">Period</th>";
+              trInnerHtml += " <td id=\"dtField02\"></td>";
+              trInnerHtml += " </tr>";
+              trInnerHtml += " <tr>";
+              trInnerHtml += " <th style=\"background: #efefef;\">Format</th>";
+              trInnerHtml += " <td id=\"dtField03\"></td>";
+              trInnerHtml += " </tr>";
+              trInnerHtml += " <tr>";
+              trInnerHtml += " <th style=\"background: #efefef;\">Expiry Date</th>";
+              trInnerHtml += " <td id=\"dtField04\"></td>";
+              trInnerHtml += " </tr>";
+              trInnerHtml += " </tbody>";
+              trInnerHtml += " </table>";
+              trInnerHtml += " </td>";
+              trInnerHtml += " </tr>";
+            }
+          } else {
+            alert('조회 실패');
+          }
+          trInnerHtml += " </tbody>";
+          trInnerHtml += " </table>";
+          trInnerHtml += "</div>";
+
+          $("#traded").append(trInnerHtml);
+
+          acdnTbl();
+
+        },
+        error: function(err) {
+          console.log(err);
+        }
+
+      })
+    }
 
     function UploadedList() {
       var buyUser = this.loginId;
@@ -165,7 +300,7 @@
               var statusVal = datainfo.traded == 1 ? "off sale" : "on sale";
               upInnerHtml += " <td>" + statusVal + "</td>";
               var delAble = statusVal == "off sale" ? "" : "disabled";
-              upInnerHtml += " <td><button class=\"btn-acdn btn btn-primary btn-xs\" onclick=\"dataDelete(" +
+              upInnerHtml += " <td><button class=\"btn btn-primary btn-xs\" onclick=\"dataDelete(" +
                 datainfo.dataId +
                 ")\" " + delAble + ">Delete</button></td>";
               upInnerHtml +=
@@ -239,8 +374,6 @@
         $(this).on('click', function() {
           if (!$(this).closest('.acdn-tit').next('.acdn-cont').is(':visible')) {
             $(this).closest('.acdn-tbl').find('.acdn-cont').hide();
-            // 데이터 맵핑 함수 발동 
-            // alert("test! :" + $(this).attr('value'));
             showDetail($(this).attr('value'));
             $(this).closest('.acdn-tit').next('.acdn-cont').show();
 
@@ -253,7 +386,7 @@
 
     // shwo detail table
     function showDetail(arg) {
-      alert("dataId : " + arg);
+      // alert("dataId : " + arg);
       var dataId = arg;
       $.ajax({
         url: '/products/getDatainfo/' + dataId,
@@ -278,6 +411,10 @@
         }
       });
 
+    }
+
+    function fileDownload(arg) {
+      location.href = "/products/fileDownload/ " + arg + "";
     }
 
     // data delete
